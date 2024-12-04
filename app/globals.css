@@ -1,0 +1,295 @@
+:root {
+  --background: #0a0a0a; /* Darker background for better contrast */
+  --foreground: #ededed; /* Light foreground for text */
+  --accent-color: #00b4d8; /* Neon blue for accents */
+  --gradient-red-blue: linear-gradient(90deg, #ff0000, #0000ff);
+  --gradient-green-purple: linear-gradient(90deg, #00ff00, #800080);
+  --gradient-yellow-pink: linear-gradient(90deg, #ffff00, #ff69b4);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #0288d1; /* Slightly darker shade of blue */
+}
+
+a, button {
+  transition: all 0.3s ease-in-out;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ul, ol {
+  margin: 0;
+  padding: 0;
+}
+
+
+.card {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.glow-effect {
+  position: relative;
+  transition: color 0.3s ease-in-out;
+}
+
+.glow-effect:hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  z-index: -1;
+}
+
+/* Chrome, Edge, Safari */
+body::-webkit-scrollbar {
+  width: 8px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #0288d1;
+}
+
+:focus {
+  outline: 3px dashed var(--accent-color);
+  outline-offset: 4px;
+}
+
+
+
+/* Center Area with Animated Gradient */
+.animated-gradient-section {
+  position: relative;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.animated-gradient-text {
+  font-size: 3rem;
+  font-weight: bold;
+  color: transparent;
+  background: linear-gradient(90deg, #ff0000, #0000ff);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: gradient-animation 5s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(90deg, #ff0000, #0000ff);
+  background-size: 200% 200%;
+  animation: gradient-background 5s infinite ease-in-out;
+}
+
+/* Gradient Lines */
+.section-divider {
+  height: 2px;
+  background: var(--gradient-green-purple);
+}
+
+/* Sections */
+header, footer, main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1rem;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+section {
+  padding: 4rem 1rem;
+  margin-bottom: 2rem;
+  /* min-height: 100vh; each section height*/
+}
+
+section h1, section h2 {
+  margin-bottom: 1.5rem;
+}
+
+/* Services Section Grid */
+.services-section .grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .services-section .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .services-section .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.services-section {
+  background-color: #000;
+}
+
+/* Service Cards */
+.service-card {
+  padding: 1.5rem;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.service-card h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--accent-color);
+}
+
+.service-card p {
+  color: #bbb;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.cta-section {
+  padding: 4rem 1rem;
+  background: linear-gradient(to bottom, #000, #1a1a1a);
+}
+
+/* Ensure no list markers are displayed by default */
+ul, li {
+  list-style: none; /* Remove default bullet points or dots */
+  margin: 0;
+  padding: 0;
+}
+
+footer {
+  margin-top: auto;
+}
+
+/* Explicitly style footer links */
+footer ul {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+footer ul li {
+  display: inline; /* Keep links inline */
+}
+
+footer ul li a {
+  text-decoration: none;
+  color: var(--accent-color);
+  transition: color 0.3s ease;
+}
+
+footer ul li a:hover {
+  color: #0288d1; /* Slightly darker accent color on hover */
+}
+
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
