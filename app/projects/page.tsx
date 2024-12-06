@@ -25,7 +25,8 @@ export default function Projects() {
   return (
     <div className="bg-gradient-to-b from-gray-900 to-black text-white min-h-screen">
       <div className="max-w-6xl mx-auto p-6 sm:p-12">
-        <h1 className="text-4xl sm:text-6xl font-bold text-center mb-8">
+        {/* <h1 className="text-4xl sm:text-6xl font-bold text-center mb-8"> */}
+        <h1 className="animated-gradient-text">
           Our Projects
         </h1>
         <p className="text-lg sm:text-xl text-center mb-10">

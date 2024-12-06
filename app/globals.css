@@ -97,6 +97,7 @@ body::-webkit-scrollbar-thumb:hover {
   background: #0288d1;
 }
 
+
 :focus {
   outline: solid;
   outline-offset: 4px;
