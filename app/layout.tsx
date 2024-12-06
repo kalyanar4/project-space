@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,11 +37,11 @@ export default function RootLayout({
             </h1>
             <nav>
               <ul className="flex space-x-6 text-sm sm:text-base">
-                <li><a href="/">Home</a></li>
-                <li><a href="/tech-stack">Tech Stack</a></li>
-                <li><a href="/projects">Projects</a></li>
-                <li><a href="/blog">Blog</a></li>
-                <li><a href="/tools">Tools</a></li>
+                <li><Link href="/">Home</Link></li>
+                <li><Link href="/tech-stack">Tech Stack</Link></li>
+                <li><Link href="/projects">Projects</Link></li>
+                <li><Link href="/blog">Blog</Link></li>
+                <li><Link href="/tools">Tools</Link></li>
               </ul>
             </nav>
           </header>
@@ -55,28 +56,19 @@ export default function RootLayout({
               <div>
                 <ul className="flex space-x-4">
                   <li>
-                    <a
-                      href="/about"
-                      className="hover:text-white transition-colors"
-                    >
+                    <Link href="/about" className="hover:text-white transition-colors">
                       About
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="/contact"
-                      className="hover:text-white transition-colors"
-                    >
+                    <Link href="/contact" className="hover:text-white transition-colors">
                       Contact
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="/privacy"
-                      className="hover:text-white transition-colors"
-                    >
+                    <Link href="/privacy" className="hover:text-white transition-colors">
                       Privacy Policy
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
