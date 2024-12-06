@@ -38,11 +38,7 @@ a {
 }
 
 a:hover {
-  color: #0288d1; /* Slightly darker shade of blue */
-}
-
-a, button {
-  transition: all 0.3s ease-in-out;
+  color: #ff69b4; /* Slightly darker shade of blue */
 }
 
 *,
@@ -102,7 +98,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 :focus {
-  outline: 3px dashed var(--accent-color);
+  outline: solid;
   outline-offset: 4px;
 }
 
@@ -119,7 +115,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 .animated-gradient-text {
-  font-size: 3rem;
+  font-size: 5rem;
   font-weight: bold;
   color: transparent;
   background: linear-gradient(90deg, #ff0000, #0000ff);
