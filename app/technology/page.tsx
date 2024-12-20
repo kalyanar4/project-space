@@ -40,7 +40,7 @@ export default function TechStack() {
     <div className="bg-gradient-to-b from-gray-900 to-black text-white min-h-screen">
       <div className="max-w-6xl mx-auto p-6 sm:p-12">
         <h1 className="animated-gradient-text">
-          Our Tech Stack
+          Technology
         </h1>
         <p className="text-lg sm:text-xl text-center mb-10">
           Explore the powerful technologies we use to build modern, efficient

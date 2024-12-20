@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Mars Machines Portfolio",
+  title: "Digital Meta Portfolio",
   description: "Explore the advanced tools and experiments of the cosmos.",
 };
 
@@ -33,12 +33,12 @@ export default function RootLayout({
           {/* Header */}
           <header className="p-6 border-b border-gray-800 flex justify-between items-center max-w-7xl mx-auto">
             <h1 className="text-xl sm:text-2xl font-semibold">
-              🚀 Mars Machines
+              🖥️ Digital Meta Zone
             </h1>
             <nav>
               <ul className="flex space-x-6 text-sm sm:text-base">
                 <li><Link href="/">Home</Link></li>
-                <li><Link href="/tech-stack">Tech Stack</Link></li>
+                <li><Link href="/technology">Technology</Link></li>
                 <li><Link href="/projects">Projects</Link></li>
                 <li><Link href="/blog">Blog</Link></li>
                 <li><Link href="/tools">Tools</Link></li>

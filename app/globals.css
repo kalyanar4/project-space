@@ -146,6 +146,8 @@ body::-webkit-scrollbar-thumb:hover {
 
 /* Gradient Lines */
 .section-divider {
+  margin-top: 20px;
+  margin-bottom: 20px;
   height: 2px;
   background: var(--gradient-green-purple);
 }

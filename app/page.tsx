@@ -6,7 +6,7 @@ export default function Home() {
       <section className="bg-gradient-to-b from-gray-900 to-black text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-6xl font-bold mb-6">
-            Welcome to Mars Machines
+            Welcome to Digital Meta Zone
           </h1>
           <p className="text-lg sm:text-xl mb-8">
             Discover cutting-edge experiments, futuristic tools, and stellar projects.
@@ -24,7 +24,7 @@ export default function Home() {
 
        {/* Animated Gradient Center Area */}
        <section className="animated-gradient-section">
-        <h2 className="animated-gradient-text">SPACE MISSIONS</h2>
+        <h2 className="animated-gradient-text">Digital Meta Zone</h2>
       </section>
 
       {/* Divider */}
