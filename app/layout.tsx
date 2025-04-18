@@ -76,7 +76,7 @@ export default function RootLayout({
               {/* Copyright */}
               <div>
                 <p className="text-sm">
-                  &copy; {new Date().getFullYear()} Mars Machines. All rights reserved.
+                  &copy; {new Date().getFullYear()} DMZ. All rights reserved.
                 </p>
               </div>
             </div>
