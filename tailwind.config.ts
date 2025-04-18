@@ -12,9 +12,16 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        "accent-color": "var(--accent-color)", // ✅ Add this line
+        "accent-color": "var(--accent-color)",
+      },
+      fontWeight: {
+        extrabold: '800',
       },
     },
   },
   plugins: [],
 } satisfies Config;
+
+
+
+
