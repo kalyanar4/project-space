@@ -27,18 +27,12 @@ export default function PDFToolsPage() {
                 <p className="text-sm text-center mb-4">{tool.description}</p>
               </div>
               <div className="text-center">
-                {tool.comingSoon ? (
-                  <span className="inline-block px-4 py-2 text-xs bg-yellow-600 rounded-full text-white">
-                    Coming Soon
-                  </span>
-                ) : (
-                  <Link
-                    href={`/tools/pdf/${tool.slug}`}
-                    className="inline-block px-4 py-2 bg-accent-color text-white rounded-lg hover:bg-blue-700 transition"
-                  >
-                    Open Tool
-                  </Link>
-                )}
+                <Link
+                  href={`/tools/pdf/${tool.slug}`}
+                  className="inline-block px-4 py-2 bg-accent-color text-white rounded-lg hover:bg-blue-700 transition"
+                >
+                  Open Tool
+                </Link>
               </div>
             </div>
           ))}
