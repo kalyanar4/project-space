@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Link from "next/link";
+import Image from "next/image";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,9 +33,18 @@ export default function RootLayout({
         <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-foreground">
           {/* Header */}
           <header className="p-6 border-b border-gray-800 flex justify-between items-center max-w-7xl mx-auto">
-            <h1 className="text-xl sm:text-2xl font-semibold">
-              🖥️ Digital Meta Zone
-            </h1>
+            <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src="/dmz.png" // make sure this path matches your logo in /public
+                alt="Digital Meta Zone Logo"
+                width={170}
+                height={170}
+                className="object-contain"
+              />
+              {/* <span className="text-xl sm:text-2xl font-semibold">
+                Digital Meta Zone
+              </span> */}
+            </Link>
             <nav>
               <ul className="flex space-x-6 text-sm sm:text-base">
                 <li><Link href="/">Home</Link></li>
@@ -81,7 +91,6 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-
         </div>
       </body>
     </html>
