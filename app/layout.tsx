@@ -35,7 +35,7 @@ export default function RootLayout({
           <header className="p-6 border-b border-gray-800 flex justify-between items-center max-w-7xl mx-auto">
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/dmz.png`}
+                src="/dmz.png"
                 alt="Digital Meta Zone Logo"
                 width={170}
                 height={170}
