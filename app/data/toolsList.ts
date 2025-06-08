@@ -2,7 +2,7 @@ export const tools = [
     {
       name: "PDF Tools",
       description: "Merge, split, compress, and edit PDFs with ease.",
-      path: "tools/pdf",
+      path: "/tools/pdf",
     },
     {
       name: "AI Tools",
