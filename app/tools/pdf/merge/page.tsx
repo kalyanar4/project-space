@@ -9,6 +9,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -97,7 +98,7 @@ export default function MergePDFPage() {
     URL.revokeObjectURL(url);
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -155,8 +156,9 @@ export default function MergePDFPage() {
                       onRemove={() => {
                         setFiles((prev) => prev.filter((f) => f.id !== file.id));
                         setThumbnails((prev) => {
-                          const { [file.id]: _, ...rest } = prev;
-                          return rest;
+                          const updated = { ...prev };
+                          delete updated[file.id];
+                          return updated;
                         });
                       }}
                     />

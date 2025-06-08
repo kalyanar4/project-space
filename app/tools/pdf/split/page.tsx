@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import Link from "next/link";
