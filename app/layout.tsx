@@ -18,6 +18,10 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Digital Meta Portfolio",
   description: "Explore the advanced tools and experiments of the cosmos.",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+  },
 };
 
 export default function RootLayout({
@@ -32,22 +36,19 @@ export default function RootLayout({
       >
         <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-foreground">
           {/* Header */}
-          <header className="p-6 border-b border-gray-800 flex justify-between items-center max-w-7xl mx-auto">
+          <header className="p-6 border-b border-gray-800 flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto space-y-4 sm:space-y-0">
             <Link href="/" className="flex items-center space-x-2">
               <Image
                 src="/dmz.png"
                 alt="Digital Meta Zone Logo"
                 width={170}
                 height={170}
-                className="object-contain"
+                className="object-contain w-32 sm:w-40 h-auto"
                 priority
               />
-              {/* <span className="text-xl sm:text-2xl font-semibold">
-                Digital Meta Zone
-              </span> */}
             </Link>
             <nav>
-              <ul className="flex space-x-6 text-sm sm:text-base">
+              <ul className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm sm:text-base">
                 <li><Link href="/">Home</Link></li>
                 <li><Link href="/technology">Technology</Link></li>
                 <li><Link href="/projects">Projects</Link></li>
