@@ -3,8 +3,8 @@ export default function Home() {
     
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-gray-900 to-black text-white">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="hero-section text-white">
+        <div className="hero-content glass-card p-8">
           <h1 className="text-4xl sm:text-6xl font-bold mb-6">
             Welcome to Digital Meta Zone
           </h1>
@@ -40,37 +40,37 @@ export default function Home() {
     </h2>
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {/* Service Cards */}
-      <div className="service-card">
+      <div className="service-card glass-card">
         <h3 className="text-xl font-semibold mb-4">Tech Exploration</h3>
         <p>
           Dive into our advanced experiments and technologies pushing the boundaries of innovation.
         </p>
       </div>
-      <div className="service-card">
+      <div className="service-card glass-card">
         <h3 className="text-xl font-semibold mb-4">Custom Tools</h3>
         <p>
           Explore tools built to solve real-world problems with a futuristic touch.
         </p>
       </div>
-      <div className="service-card">
+      <div className="service-card glass-card">
         <h3 className="text-xl font-semibold mb-4">Learn and Grow</h3>
         <p>
           Access resources, tutorials, and guides to master cutting-edge technologies.
         </p>
       </div>
-      <div className="service-card">
+      <div className="service-card glass-card">
         <h3 className="text-xl font-semibold mb-4">AI Tools</h3>
         <p>
           Leverage cutting-edge AI solutions, from chatbots to image generation, to supercharge your workflows.
         </p>
       </div>
-      <div className="service-card">
+      <div className="service-card glass-card">
         <h3 className="text-xl font-semibold mb-4">Developer Utilities</h3>
         <p>
           Access developer tools like JSON formatters, code converters, and API testers.
         </p>
       </div>
-      <div className="service-card">
+      <div className="service-card glass-card">
         <h3 className="text-xl font-semibold mb-4">Daily Utilities</h3>
         <p>
           Perform tasks like PDF merging, image resizing, video editing, and file conversions quickly and efficiently.
