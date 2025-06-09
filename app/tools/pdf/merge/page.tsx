@@ -15,7 +15,7 @@ import {
   arrayMove,
   SortableContext,
   useSortable,
-  verticalListSortingStrategy,
+  rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -30,6 +30,7 @@ export default function MergePDFPage() {
   const [thumbnails, setThumbnails] = useState<{ [id: string]: string }>({});
   const [merging, setMerging] = useState(false);
   const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
+  const [progress, setProgress] = useState(0);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -64,6 +65,7 @@ export default function MergePDFPage() {
     validPDFs.forEach(generateThumbnail);
     setFiles((prev) => [...prev, ...validPDFs]);
     setMergedBlob(null);
+    setProgress(0);
   };
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -73,13 +75,17 @@ export default function MergePDFPage() {
 
   const mergePDFs = async () => {
     setMerging(true);
+    setProgress(0);
     const mergedPdf = await PDFDocument.create();
 
-    for (const file of files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       const bytes = await file.arrayBuffer();
       const pdf = await PDFDocument.load(bytes);
       const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
       copiedPages.forEach((page) => mergedPdf.addPage(page));
+      setProgress(Math.round(((i + 1) / files.length) * 100));
+      await new Promise((r) => setTimeout(r, 50));
     }
 
     const mergedBytes = await mergedPdf.save();
@@ -146,10 +152,10 @@ export default function MergePDFPage() {
           <div className="mt-6">
             <h2 className="text-xl font-bold mb-4">Reorder Files</h2>
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-              <SortableContext items={files.map((f) => f.id)} strategy={verticalListSortingStrategy}>
-                <ul className="space-y-2">
+              <SortableContext items={files.map((f) => f.id)} strategy={rectSortingStrategy}>
+                <ul className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {files.map((file) => (
-                    <SortableFileItem
+                    <SortableThumbnail
                       key={file.id}
                       file={file}
                       thumbnail={thumbnails[file.id]}
@@ -181,11 +187,14 @@ export default function MergePDFPage() {
 
         {/* Progress */}
         {merging && (
-          <div className="mt-4">
-            <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-              <div className="h-full bg-accent-color animate-pulse w-full" />
+          <div className="mt-6">
+            <div className="h-2 rounded-full bg-gray-700 overflow-hidden">
+              <div
+                className="h-full bg-accent-color transition-all"
+                style={{ width: `${progress}%` }}
+              />
             </div>
-            <p className="text-xs text-center text-gray-400 mt-2">Merging in progress...</p>
+            <p className="text-xs text-center text-gray-400 mt-2">{progress}%</p>
           </div>
         )}
 
@@ -206,8 +215,8 @@ export default function MergePDFPage() {
   );
 }
 
-// 🧩 Sortable File Item with Thumbnail
-function SortableFileItem({
+// 🧩 Sortable thumbnail grid item
+function SortableThumbnail({
   file,
   thumbnail,
   onRemove,
@@ -235,26 +244,26 @@ function SortableFileItem({
       style={style}
       {...attributes}
       {...listeners}
-      className="bg-gray-800 p-2 rounded flex items-center border border-gray-700 cursor-move"
+      className="relative bg-gray-800 p-2 rounded-lg border border-gray-700 cursor-move"
     >
       {thumbnail && (
         <img
           src={thumbnail}
           alt="PDF Thumbnail"
-          className="w-14 h-20 object-cover rounded mr-4"
+          className="w-full h-32 object-cover rounded"
         />
       )}
-      <span className="flex-1 text-sm truncate">{file.name}</span>
       <button
         onClick={(e) => {
           e.stopPropagation();
           onRemove();
         }}
-        className="ml-4 text-red-400 hover:text-red-200 transition"
+        className="absolute top-1 right-1 text-red-400 hover:text-red-200 transition"
         title="Remove file"
       >
         ✕
       </button>
+      <p className="text-xs text-center mt-1 truncate">{file.name}</p>
     </li>
   );
 }
