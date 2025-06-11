@@ -36,8 +36,8 @@ export default function PDFToWordPage() {
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      const text = content.items
-        .map((item: any) => ("str" in item ? (item as any).str : ""))
+      const text = (content.items as Array<{ str?: string }>)
+        .map((item) => ("str" in item && item.str ? item.str : ""))
         .join(" ");
       paragraphs.push(new Paragraph(text));
       setProgress(Math.round((i / pdf.numPages) * 100));
