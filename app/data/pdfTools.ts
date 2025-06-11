@@ -21,7 +21,7 @@ export const pdfTools = [
       name: "PDF to Word",
       description: "Convert your PDFs into editable Word documents.",
       slug: "pdf-to-word",
-      comingSoon: true,
+      comingSoon: false,
     },
   ];
   
