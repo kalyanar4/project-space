@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import Link from "next/link";
+import Image from "next/image";
 import {
   DndContext,
   closestCenter,
@@ -247,9 +248,11 @@ function SortableThumbnail({
       className="relative bg-gray-800 p-2 rounded-lg border border-gray-700 cursor-move"
     >
       {thumbnail && (
-        <img
+        <Image
           src={thumbnail}
           alt="PDF Thumbnail"
+          width={128}
+          height={128}
           className="w-full h-32 object-cover rounded"
         />
       )}
