@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import Link from "next/link";
+import Image from "next/image";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`;
 
@@ -155,7 +156,14 @@ export default function SplitPDFPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {thumbnails.map((src, idx) => (
                 <div key={idx} className="bg-gray-800 p-2 rounded shadow">
-                  <img src={src} alt={`Page ${idx + 1}`} className="rounded" />
+                  <Image
+                    src={src}
+                    alt={`Page ${idx + 1}`}
+                    width={200}
+                    height={200}
+                    className="rounded"
+                    unoptimized
+                  />
                   <p className="text-xs text-center text-gray-400 mt-1">Page {idx + 1}</p>
                 </div>
               ))}

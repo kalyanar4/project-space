@@ -26,8 +26,12 @@ export default function TextGeneratorPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error generating text");
       setResult(data.text);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
