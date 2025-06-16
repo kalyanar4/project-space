@@ -35,7 +35,8 @@ export async function POST(req: NextRequest) {
     const data = await openAiRes.json();
     const text = data.choices?.[0]?.message?.content ?? "";
     return NextResponse.json({ text });
-  } catch (e) {
+  } catch (error) {
+    console.error("Error generating text:", error);
     return NextResponse.json(
       { error: "Failed to generate text" },
       { status: 500 }
