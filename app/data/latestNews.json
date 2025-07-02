@@ -1,0 +1,52 @@
+[
+  {
+    "title": "AI Breakthrough in Computer Vision",
+    "link": "https://example.com/news1",
+    "image": "https://placehold.co/600x400?text=News+1"
+  },
+  {
+    "title": "New ChatGPT Model Released",
+    "link": "https://example.com/news2",
+    "image": "https://placehold.co/600x400?text=News+2"
+  },
+  {
+    "title": "Robotics Advances in 2024",
+    "link": "https://example.com/news3",
+    "image": "https://placehold.co/600x400?text=News+3"
+  },
+  {
+    "title": "Researchers Improve Reinforcement Learning",
+    "link": "https://example.com/news4",
+    "image": "https://placehold.co/600x400?text=News+4"
+  },
+  {
+    "title": "Major Funding for AI Startups",
+    "link": "https://example.com/news5",
+    "image": "https://placehold.co/600x400?text=News+5"
+  },
+  {
+    "title": "AI Ethics Debate Continues",
+    "link": "https://example.com/news6",
+    "image": "https://placehold.co/600x400?text=News+6"
+  },
+  {
+    "title": "New AI Hardware Unveiled",
+    "link": "https://example.com/news7",
+    "image": "https://placehold.co/600x400?text=News+7"
+  },
+  {
+    "title": "Self-driving Cars Reach New Milestone",
+    "link": "https://example.com/news8",
+    "image": "https://placehold.co/600x400?text=News+8"
+  },
+  {
+    "title": "AI Helps Predict Weather Patterns",
+    "link": "https://example.com/news9",
+    "image": "https://placehold.co/600x400?text=News+9"
+  },
+  {
+    "title": "Generative Art Goes Mainstream",
+    "link": "https://example.com/news10",
+    "image": "https://placehold.co/600x400?text=News+10"
+  }
+]
