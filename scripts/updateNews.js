@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 
+
 const RSS_URL = 'https://hnrss.org/frontpage';
 
 function parseFeed(xml) {
@@ -19,6 +20,7 @@ async function fetchNews() {
   const res = await fetch(RSS_URL);
   const xml = await res.text();
   return parseFeed(xml);
+
 }
 
 async function update() {
