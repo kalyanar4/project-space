@@ -17,4 +17,10 @@ export const aiTools = [
     slug: "chatbot",
     comingSoon: true,
   },
+  {
+    name: "Latest News",
+    description: "Stay updated with trending AI news articles.",
+    slug: "news",
+    comingSoon: false,
+  },
 ];
