@@ -4,7 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { Document, Packer, Paragraph } from "docx";
 import { saveAs } from "file-saver";
-import * as pdfjsLib from "pdfjs-dist";
+// Importing the webpack build of pdfjs prevents Next.js from trying to
+// include the optional Node `canvas` package during build time, which
+// previously caused compilation errors. This variant is intended for
+// bundlers and works entirely in the browser.
+import * as pdfjsLib from "pdfjs-dist/webpack";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
