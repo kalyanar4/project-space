@@ -2,7 +2,12 @@
 
 import { useRef, useState } from "react";
 import { PDFDocument } from "pdf-lib";
-import * as pdfjsLib from "pdfjs-dist";
+// Use the special webpack build of pdfjs to avoid pulling in the Node
+// `canvas` dependency during Next.js server-side builds. The default
+// entry attempts to require `canvas` which causes the build to fail.
+// Importing from `pdfjs-dist/webpack` provides a browser-friendly
+// bundle that works both in development and production.
+import * as pdfjsLib from "pdfjs-dist/webpack";
 import Link from "next/link";
 import Image from "next/image";
 

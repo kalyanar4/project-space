@@ -20,7 +20,10 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import * as pdfjsLib from "pdfjs-dist";
+// Use the webpack-friendly build of pdfjs to avoid the optional Node
+// `canvas` dependency that causes Next.js builds to fail. This build is
+// meant for browser environments and works seamlessly in production.
+import * as pdfjsLib from "pdfjs-dist/webpack";
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
 
