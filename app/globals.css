@@ -1,10 +1,16 @@
 :root {
-  --background: #0a0a0a; /* Darker background for better contrast */
-  --foreground: #ededed; /* Light foreground for text */
-  --accent-color: #00b4d8; /* Neon blue for accents */
+  --background: #ffffff; /* Light background */
+  --foreground: #0a0a0a; /* Dark text */
+  --accent-color: #1e90ff; /* Accent for light mode */
   --gradient-red-blue: linear-gradient(90deg, #ff0000, #0000ff);
   --gradient-green-purple: linear-gradient(90deg, #00ff00, #800080);
   --gradient-yellow-pink: linear-gradient(90deg, #ffff00, #ff69b4);
+}
+
+.dark {
+  --background: #0a0a0a; /* Darker background for better contrast */
+  --foreground: #ededed; /* Light foreground for text */
+  --accent-color: #00b4d8; /* Neon blue for accents */
 }
 
 html {
