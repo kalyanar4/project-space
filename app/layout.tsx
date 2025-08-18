@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,13 +31,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-foreground">
           {/* Header */}
-          <header className="p-6 border-b border-gray-800 flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto space-y-4 sm:space-y-0">
+          <header className="p-6 border-b border-gray-800 flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto gap-4">
             <Link href="/" className="flex items-center space-x-2">
               <Image
                 src="/dmz.png"
@@ -56,6 +57,7 @@ export default function RootLayout({
                 <li><Link href="/tools">Tools</Link></li>
               </ul>
             </nav>
+            <ThemeToggle />
           </header>
 
           {/* Main Content */}
