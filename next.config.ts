@@ -8,6 +8,10 @@ import type { NextConfig } from "next";
 // because it tries to bundle the native `canvas` package.
 const nextConfig: NextConfig = {
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
+  output: "export",
+  images: {
+    unoptimized: true,
+  },
   webpack: (config) => {
     // Prevent webpack from attempting to bundle the native `canvas` module.
     config.resolve = config.resolve || {};

@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     width: "device-width",
     initialScale: 1,
   },
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -30,6 +33,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body
@@ -40,7 +45,7 @@ export default function RootLayout({
           <header className="p-6 border-b border-gray-800 flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto gap-4">
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/dmz.png"
+                src={`${basePath}/dmz.png`}
                 alt="Digital Meta Zone Logo"
                 width={170}
                 height={170}
