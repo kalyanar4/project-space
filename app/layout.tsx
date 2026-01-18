@@ -4,7 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import ThemeToggle from "@/components/ThemeToggle";
-import { basePath } from "@/lib/basePath";
+import { withBasePath } from "@/lib/basePath";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     initialScale: 1,
   },
   icons: {
-    icon: `${basePath}/favicon.ico`,
+    icon: withBasePath("favicon.ico"),
   },
 };
 
@@ -38,14 +38,16 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        style={{ "--base-path": basePath || "" } as React.CSSProperties}
+        style={
+          { "--globe-image": `url(${withBasePath("globe.svg")})` } as React.CSSProperties
+        }
       >
         <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-foreground">
           {/* Header */}
           <header className="p-6 border-b border-gray-800 flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto gap-4">
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src={`${basePath}/dmz.png`}
+                src={withBasePath("dmz.png")}
                 alt="Digital Meta Zone Logo"
                 width={170}
                 height={170}

@@ -37,4 +37,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Base path configuration
 
-This app supports deploying to subpaths (for example, GitHub Pages). Set `NEXT_PUBLIC_BASE_PATH` to the deployment subpath (such as `/project-space`). When deploying from GitHub Actions, the `GITHUB_REPOSITORY` environment variable is used to infer the repository name if `NEXT_PUBLIC_BASE_PATH` is not provided.
+This app supports deploying to subpaths (for example, GitHub Pages). Set `NEXT_PUBLIC_BASE_PATH` to the deployment subpath (such as `/project-space`). When deploying from GitHub Actions, the `GITHUB_REPOSITORY` environment variable is used to infer the repository name if `NEXT_PUBLIC_BASE_PATH` is not provided. Asset URLs (including CSS background images) are generated with the resolved base path to keep exported deployments working.

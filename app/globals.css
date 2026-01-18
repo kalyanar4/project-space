@@ -208,7 +208,7 @@ section h1, section h2 {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url(var(--base-path)/globe.svg);
+  background-image: var(--globe-image);
   background-size: cover;
   background-position: center;
   opacity: 0.2;

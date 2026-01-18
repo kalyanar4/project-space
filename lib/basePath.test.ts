@@ -52,3 +52,23 @@ describe("basePath", () => {
     assert.equal(basePath, "");
   });
 });
+
+describe("withBasePath", () => {
+  it("prefixes assets with NEXT_PUBLIC_BASE_PATH when set", async () => {
+    process.env.NEXT_PUBLIC_BASE_PATH = "/custom";
+    delete process.env.GITHUB_REPOSITORY;
+
+    const { withBasePath } = await loadBasePath();
+
+    assert.equal(withBasePath("globe.svg"), "/custom/globe.svg");
+  });
+
+  it("handles leading slashes when no base path is set", async () => {
+    delete process.env.NEXT_PUBLIC_BASE_PATH;
+    delete process.env.GITHUB_REPOSITORY;
+
+    const { withBasePath } = await loadBasePath();
+
+    assert.equal(withBasePath("/globe.svg"), "/globe.svg");
+  });
+});
