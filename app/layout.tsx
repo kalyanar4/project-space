@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     initialScale: 1,
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: `${basePath}/favicon.ico`,
   },
 };
 
@@ -38,6 +38,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ "--base-path": basePath || "" } as React.CSSProperties}
       >
         <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-foreground">
           {/* Header */}
