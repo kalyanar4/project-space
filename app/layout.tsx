@@ -4,6 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import ThemeToggle from "@/components/ThemeToggle";
+import { withBasePath } from "@/lib/basePath";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   title: "Digital Meta Portfolio",
   description: "Explore advanced tools and experiments.",
   icons: {
-    icon: "/favicon.ico",
+    icon: withBasePath("favicon.ico"),
   },
 };
 
@@ -42,17 +43,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={
+          { "--globe-image": `url(${withBasePath("globe.svg")})` } as React.CSSProperties
+        }
+      >
         <div className="app-shell">
           <header className="site-header glass-panel">
             <div className="site-header-inner">
               <Link href="/" className="flex items-center">
                 <Image
-                  src={`${basePath}/dmz.png`}
+                  src={withBasePath("dmz.png")}
                   alt="Digital Meta Zone Logo"
                   width={156}
                   height={42}

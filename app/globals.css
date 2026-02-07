@@ -168,6 +168,8 @@ video {
 }
 
 .hero-section {
+  position: relative;
+  overflow: hidden;
   padding: clamp(3.2rem, 8vw, 6rem) clamp(1rem, 3vw, 2.5rem);
   border-radius: 2rem;
   border: 1px solid var(--border);
@@ -178,7 +180,20 @@ video {
   text-align: center;
 }
 
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--globe-image);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2;
+  filter: blur(40px);
+}
+
 .hero-content {
+  position: relative;
+  z-index: 1;
   max-width: 800px;
   margin: 0 auto;
 }

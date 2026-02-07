@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { basePath } from "./lib/basePath";
 
 // Next.js configuration. In addition to setting the optional base path we
 // also tweak the webpack configuration so that the optional `canvas`
@@ -7,7 +8,7 @@ import type { NextConfig } from "next";
 // uses it in the browser. Without this alias Next.js would fail to compile
 // because it tries to bundle the native `canvas` package.
 const nextConfig: NextConfig = {
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
+  basePath,
   output: "export",
   images: {
     unoptimized: true,

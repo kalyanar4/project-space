@@ -34,3 +34,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Base path configuration
+
+This app supports deploying to subpaths (for example, GitHub Pages). Set `NEXT_PUBLIC_BASE_PATH` to the deployment subpath (such as `/project-space`). When deploying from GitHub Actions, the `GITHUB_REPOSITORY` environment variable is used to infer the repository name if `NEXT_PUBLIC_BASE_PATH` is not provided. Asset URLs (including CSS background images) are generated with the resolved base path to keep exported deployments working.
