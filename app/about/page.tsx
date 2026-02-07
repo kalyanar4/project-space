@@ -1,17 +1,22 @@
-import React from "react";
-
 export default function About() {
   return (
-    <div className="bg-gradient-to-b from-gray-900 to-black text-white min-h-screen p-6 sm:p-12">
-      <div className="max-w-3xl mx-auto space-y-6">
-        <h1 className="text-3xl sm:text-5xl font-bold text-center">About Digital Meta Zone</h1>
-        <p>
-          Digital Meta Zone curates cutting-edge tools and resources for developers, designers, and tech enthusiasts. Our mission is to provide easy access to utilities that streamline workflows and spark innovation.
+    <div className="page-shell">
+      <section className="page-intro">
+        <h1 className="page-title">About Digital Meta Zone</h1>
+      </section>
+
+      <section className="glass-card max-w-3xl mx-auto space-y-5 text-left">
+        <p className="text-muted">
+          Digital Meta Zone curates practical tools and references for developers,
+          designers, and tech teams. The goal is to make advanced workflows simple,
+          understandable, and fast to adopt.
         </p>
-        <p>
-          We experiment with new technologies and share insights through our blog, while offering a growing library of utilities from PDF merging to AI-powered assistants. Our team is passionate about bridging the gap between complex tech and everyday problem solving.
+        <p className="text-muted">
+          We experiment with emerging technologies and publish what works. The platform
+          includes a growing set of utilities, from PDF workflows to AI assistants,
+          designed to solve day-to-day problems with clean execution.
         </p>
-      </div>
+      </section>
     </div>
   );
 }

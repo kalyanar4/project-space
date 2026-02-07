@@ -1,102 +1,93 @@
+import Link from "next/link";
+
+const services = [
+  {
+    title: "Tech Exploration",
+    description:
+      "Track experiments and applied research that turns emerging ideas into practical products.",
+  },
+  {
+    title: "Custom Tools",
+    description:
+      "Purpose-built utilities for document workflows, automation, and fast prototyping.",
+  },
+  {
+    title: "Learning Resources",
+    description:
+      "Clear guides and references designed to help teams ship modern software faster.",
+  },
+  {
+    title: "AI Workflows",
+    description:
+      "Production-minded AI tooling for generation, summarization, and day-to-day productivity.",
+  },
+  {
+    title: "Developer Utilities",
+    description:
+      "Conversion, formatting, and debugging helpers that remove repetitive engineering friction.",
+  },
+  {
+    title: "Daily Utilities",
+    description:
+      "Reliable file and media tools to get routine tasks done with fewer steps.",
+  },
+];
+
 export default function Home() {
   return (
-    
-    <div>
-      {/* Hero Section */}
-      <section className="hero-section text-white">
-        <div className="hero-content glass-card p-8">
-          <h1 className="text-4xl sm:text-6xl font-bold mb-6">
-            Welcome to Digital Meta Zone
-          </h1>
-          <p className="text-lg sm:text-xl mb-8">
-            Discover cutting-edge experiments, futuristic tools, and stellar projects.
+    <div className="page-shell">
+      <section className="hero-section">
+        <div className="hero-content">
+          <h1 className="page-title">Digital Meta Zone</h1>
+          <p className="page-subtitle">
+            Modern tools and experiments with an interface focused on clarity,
+            speed, and polish.
           </p>
-          <a
-            href="/projects"
-            className="inline-block px-6 py-3 bg-accent-color text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            Explore Projects
-          </a>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link href="/projects" className="primary-btn">
+              Explore Projects
+            </Link>
+            <Link href="/tools" className="secondary-btn">
+              Open Tools
+            </Link>
+          </div>
         </div>
       </section>
-      {/* Divider */}
-      <div className="section-divider"></div>
 
-       {/* Animated Gradient Center Area */}
-       <section className="animated-gradient-section">
-        <h2 className="animated-gradient-text">Digital Meta Zone</h2>
+      <div className="section-divider" />
+
+      <section className="animated-gradient-section">
+        <h2 className="animated-gradient-text">Build. Ship. Refine.</h2>
       </section>
 
-      {/* Divider */}
-      <div className="section-divider"></div>
+      <div className="section-divider" />
 
+      <section className="services-section">
+        <div className="page-intro">
+          <h2 className="page-title">Our Services</h2>
+          <p className="page-subtitle">
+            A focused toolkit for engineering teams, creators, and product builders.
+          </p>
+        </div>
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => (
+            <article key={service.title} className="service-card">
+              <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
+              <p>{service.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
+      <div className="section-divider" />
 
-    {/* Services Section */}
-<section className="services-section">
-  <div className="max-w-6xl mx-auto">
-    <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
-      Our Services
-    </h2>
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {/* Service Cards */}
-      <div className="service-card glass-card">
-        <h3 className="text-xl font-semibold mb-4">Tech Exploration</h3>
-        <p>
-          Dive into our advanced experiments and technologies pushing the boundaries of innovation.
-        </p>
-      </div>
-      <div className="service-card glass-card">
-        <h3 className="text-xl font-semibold mb-4">Custom Tools</h3>
-        <p>
-          Explore tools built to solve real-world problems with a futuristic touch.
-        </p>
-      </div>
-      <div className="service-card glass-card">
-        <h3 className="text-xl font-semibold mb-4">Learn and Grow</h3>
-        <p>
-          Access resources, tutorials, and guides to master cutting-edge technologies.
-        </p>
-      </div>
-      <div className="service-card glass-card">
-        <h3 className="text-xl font-semibold mb-4">AI Tools</h3>
-        <p>
-          Leverage cutting-edge AI solutions, from chatbots to image generation, to supercharge your workflows.
-        </p>
-      </div>
-      <div className="service-card glass-card">
-        <h3 className="text-xl font-semibold mb-4">Developer Utilities</h3>
-        <p>
-          Access developer tools like JSON formatters, code converters, and API testers.
-        </p>
-      </div>
-      <div className="service-card glass-card">
-        <h3 className="text-xl font-semibold mb-4">Daily Utilities</h3>
-        <p>
-          Perform tasks like PDF merging, image resizing, video editing, and file conversions quickly and efficiently.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-       {/* Divider */}
-       <div className="section-divider"></div>
-
-      {/* Call to Action */}
       <section className="cta-section">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-white">
-            Ready to explore the future?
-          </h2>
-          <a
-            href="/contact"
-            className="inline-block px-6 py-3 bg-accent-color text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            Get in Touch
-          </a>
-        </div>
+        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-4">
+          Ready to explore what comes next?
+        </h2>
+        <Link href="/contact" className="primary-btn">
+          Get in Touch
+        </Link>
       </section>
     </div>
   );
