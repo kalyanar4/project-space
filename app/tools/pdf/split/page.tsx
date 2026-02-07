@@ -2,15 +2,11 @@
 
 import { useRef, useState } from "react";
 import { PDFDocument } from "pdf-lib";
-// Use the special webpack build of pdfjs to avoid pulling in the Node
-// `canvas` dependency during Next.js server-side builds. The default
-// entry attempts to require `canvas` which causes the build to fail.
-// Importing from `pdfjs-dist/webpack` provides a browser-friendly
-// bundle that works both in development and production.
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import Link from "next/link";
 import Image from "next/image";
 import ToolsNav from "../../ToolsNav";
+import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`;
 
@@ -23,11 +19,17 @@ export default function SplitPDFPage() {
   const [progress, setProgress] = useState(0);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [pageRanges, setPageRanges] = useState<PageRangeInput>("");
+  const [error, setError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File) => {
-    if (!file || file.type !== "application/pdf") return;
+    if (!file || file.type !== "application/pdf") {
+      setError("Please upload a valid PDF file.");
+      return;
+    }
+
+    setError(null);
     setSelectedFile(file);
     setSplitFiles([]);
     setProgress(0);
@@ -35,23 +37,29 @@ export default function SplitPDFPage() {
 
     const fileReader = new FileReader();
     fileReader.onload = async () => {
-      const typedarray = new Uint8Array(fileReader.result as ArrayBuffer);
-      const pdf = await pdfjsLib.getDocument(typedarray).promise;
-      const thumbs: string[] = [];
+      try {
+        const typedarray = new Uint8Array(fileReader.result as ArrayBuffer);
+        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+        const thumbs: string[] = [];
 
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 0.5 });
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d")!;
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 0.5 });
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          if (!context) continue;
 
-        await page.render({ canvasContext: context, viewport }).promise;
-        thumbs.push(canvas.toDataURL());
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          await page.render({ canvasContext: context, viewport }).promise;
+          thumbs.push(canvas.toDataURL());
+        }
+
+        setThumbnails(thumbs);
+      } catch {
+        setError("Unable to generate PDF preview thumbnails.");
       }
-
-      setThumbnails(thumbs);
     };
     fileReader.readAsArrayBuffer(file);
   };
@@ -72,8 +80,8 @@ export default function SplitPDFPage() {
     const pages: number[] = [];
     input.split(",").forEach((part) => {
       const [start, end] = part.split("-").map(Number);
-      if (!isNaN(start)) {
-        if (isNaN(end)) {
+      if (!Number.isNaN(start)) {
+        if (Number.isNaN(end)) {
           pages.push(start - 1);
         } else {
           for (let i = start; i <= end; i++) {
@@ -86,29 +94,47 @@ export default function SplitPDFPage() {
   };
 
   const splitPDF = async () => {
-    if (!selectedFile) return;
-    setSplitting(true);
-    setProgress(0);
-
-    const arrayBuffer = await selectedFile.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(arrayBuffer);
-    const totalPages = pdfDoc.getPageCount();
-    const pagesToSplit = pageRanges ? parsePageRanges(pageRanges, totalPages) : [...Array(totalPages).keys()];
-    const splitBlobs: Blob[] = [];
-
-    for (let i = 0; i < pagesToSplit.length; i++) {
-      const newPdf = await PDFDocument.create();
-      const [copiedPage] = await newPdf.copyPages(pdfDoc, [pagesToSplit[i]]);
-      newPdf.addPage(copiedPage);
-      const newPdfBytes = await newPdf.save();
-      splitBlobs.push(new Blob([newPdfBytes], { type: "application/pdf" }));
-
-      await new Promise((r) => setTimeout(r, 80));
-      setProgress(Math.round(((i + 1) / pagesToSplit.length) * 100));
+    if (!selectedFile) {
+      setError("Upload a file before splitting.");
+      return;
     }
 
-    setSplitFiles(splitBlobs);
-    setSplitting(false);
+    setSplitting(true);
+    setProgress(0);
+    setError(null);
+
+    try {
+      const arrayBuffer = await selectedFile.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const totalPages = pdfDoc.getPageCount();
+      const pagesToSplit = pageRanges
+        ? parsePageRanges(pageRanges, totalPages)
+        : [...Array(totalPages).keys()];
+
+      if (pagesToSplit.length === 0) {
+        setError("No valid pages selected. Check your page range input.");
+        setSplitting(false);
+        return;
+      }
+
+      const splitBlobs: Blob[] = [];
+
+      for (let i = 0; i < pagesToSplit.length; i++) {
+        const newPdf = await PDFDocument.create();
+        const [copiedPage] = await newPdf.copyPages(pdfDoc, [pagesToSplit[i]]);
+        newPdf.addPage(copiedPage);
+        const newPdfBytes = await newPdf.save();
+        splitBlobs.push(new Blob([newPdfBytes], { type: "application/pdf" }));
+
+        setProgress(Math.round(((i + 1) / pagesToSplit.length) * 100));
+      }
+
+      setSplitFiles(splitBlobs);
+    } catch {
+      setError("Failed to split PDF. Please try a different file.");
+    } finally {
+      setSplitting(false);
+    }
   };
 
   const handleDownload = (blob: Blob, index: number) => {
@@ -152,9 +178,27 @@ export default function SplitPDFPage() {
             className="text-gray-400 hover:text-white text-sm"
             onClick={() => fileInputRef.current?.click()}
           >
-            {selectedFile ? `Change File` : `Click or drag a PDF here to upload`}
+            {selectedFile ? "Change File" : "Click or drag a PDF here to upload"}
           </button>
-          {selectedFile && <p className="mt-2 text-sm text-green-400">✅ {selectedFile.name}</p>}
+          {selectedFile && <p className="mt-2 text-sm text-green-400">{selectedFile.name}</p>}
+        </div>
+
+        <div className="mt-6 grid gap-4">
+          {error && <ErrorState title="Split Error" description={error} />}
+
+          {!error && !selectedFile && (
+            <EmptyState
+              title="No File Selected"
+              description="Upload a PDF to preview pages and split output files."
+            />
+          )}
+
+          {splitting && (
+            <LoadingState
+              title="Splitting PDF"
+              description={`Processing selected pages... ${progress}% complete.`}
+            />
+          )}
         </div>
 
         {thumbnails.length > 0 && (
@@ -200,20 +244,6 @@ export default function SplitPDFPage() {
           </div>
         )}
 
-        {/* Progress bar */}
-        {splitting && (
-          <div className="mt-6">
-            <div className="h-2 rounded-full bg-gray-700 overflow-hidden">
-              <div
-                className="h-full bg-accent-color transition-all"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <p className="text-xs text-center text-gray-400 mt-2">{progress}%</p>
-          </div>
-        )}
-
-        {/* Download */}
         {splitFiles.length > 0 && (
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-4 text-center">Download Pages</h2>

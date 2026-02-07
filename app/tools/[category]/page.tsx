@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ToolsNav from "../ToolsNav";
+import TrackedLink from "@/components/TrackedLink";
 import { findToolCategoryBySlug, plannedToolCategories } from "../../data/toolCategories";
 
 interface ToolCategoryPageProps {
@@ -35,9 +36,14 @@ export default async function ToolCategoryPage({ params }: ToolCategoryPageProps
           <Link href="/tools" className="secondary-btn">
             Back to All Tools
           </Link>
-          <Link href="/contact" className="primary-btn">
+          <TrackedLink
+            href="/contact"
+            className="primary-btn"
+            eventName="planned_join_early_access_click"
+            eventPayload={{ category: category.slug }}
+          >
             Join Early Access
-          </Link>
+          </TrackedLink>
         </div>
       </section>
     </div>

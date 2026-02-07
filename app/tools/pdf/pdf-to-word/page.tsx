@@ -4,12 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { Document, Packer, Paragraph } from "docx";
 import { saveAs } from "file-saver";
-import ToolsNav from "../../ToolsNav";
-// Importing the webpack build of pdfjs prevents Next.js from trying to
-// include the optional Node `canvas` package during build time, which
-// previously caused compilation errors. This variant is intended for
-// bundlers and works entirely in the browser.
 import * as pdfjsLib from "pdfjs-dist/webpack";
+import ToolsNav from "../../ToolsNav";
+import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
@@ -19,39 +16,52 @@ export default function PDFToWordPage() {
   const [wordBlob, setWordBlob] = useState<Blob | null>(null);
   const [converting, setConverting] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected && selected.type === "application/pdf") {
       setFile(selected);
       setWordBlob(null);
+      setError(null);
+    } else {
+      setError("Please select a valid PDF file.");
     }
   };
 
   const convertPDF = async () => {
-    if (!file) return;
+    if (!file) {
+      setError("Upload a PDF before converting.");
+      return;
+    }
 
     setConverting(true);
     setProgress(0);
+    setError(null);
 
-    const buffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+    try {
+      const buffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
 
-    const paragraphs: Paragraph[] = [];
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const text = (content.items as Array<{ str?: string }>)
-        .map((item) => ("str" in item && item.str ? item.str : ""))
-        .join(" ");
-      paragraphs.push(new Paragraph(text));
-      setProgress(Math.round((i / pdf.numPages) * 100));
+      const paragraphs: Paragraph[] = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        const text = (content.items as Array<{ str?: string }>)
+          .map((item) => ("str" in item && item.str ? item.str : ""))
+          .join(" ");
+        paragraphs.push(new Paragraph(text));
+        setProgress(Math.round((i / pdf.numPages) * 100));
+      }
+
+      const doc = new Document({ sections: [{ children: paragraphs }] });
+      const blob = await Packer.toBlob(doc);
+      setWordBlob(blob);
+    } catch {
+      setError("Conversion failed. Try another PDF file.");
+    } finally {
+      setConverting(false);
     }
-
-    const doc = new Document({ sections: [{ children: paragraphs }] });
-    const blob = await Packer.toBlob(doc);
-    setWordBlob(blob);
-    setConverting(false);
   };
 
   const downloadDocx = () => {
@@ -101,21 +111,27 @@ export default function PDFToWordPage() {
           )}
         </div>
 
-        {converting && (
-          <div className="mt-6">
-            <div className="h-2 rounded-full bg-gray-700 overflow-hidden">
-              <div
-                className="h-full bg-accent-color transition-all"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <p className="text-xs text-center text-gray-400 mt-2">{progress}%</p>
-          </div>
-        )}
+        <div className="mt-6 grid gap-4">
+          {error && <ErrorState title="Conversion Error" description={error} />}
+
+          {!error && !file && (
+            <EmptyState
+              title="No File Selected"
+              description="Upload a PDF to generate an editable Word file."
+            />
+          )}
+
+          {converting && (
+            <LoadingState
+              title="Converting PDF"
+              description={`Extracting text and building document... ${progress}% complete.`}
+            />
+          )}
+        </div>
 
         {wordBlob && (
           <div className="text-center mt-10">
-            <h2 className="text-xl font-bold mb-4 text-green-400">✅ Conversion complete!</h2>
+            <h2 className="text-xl font-bold mb-4 text-green-400">Conversion complete.</h2>
             <button
               onClick={downloadDocx}
               className="px-6 py-3 bg-accent-color text-black font-semibold rounded-lg hover:brightness-110 transition"

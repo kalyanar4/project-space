@@ -27,7 +27,7 @@ export const toolCategories: ToolCategory[] = [
     slug: "developer",
     name: "Developer Utilities",
     description: "Formatting, validation, and build-support tools for engineers.",
-    status: "planned",
+    status: "live",
     commercialPurpose: "Increase retention via frequent developer workflow usage.",
   },
   {

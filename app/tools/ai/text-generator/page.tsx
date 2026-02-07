@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import ToolsNav from "../../ToolsNav";
+import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
 
 export default function TextGeneratorPage() {
   const [prompt, setPrompt] = useState("");
@@ -71,14 +72,30 @@ export default function TextGeneratorPage() {
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+        <div className="mt-6">
+          {loading && (
+            <LoadingState
+              title="Generating Response"
+              description="AI is preparing your output. This usually takes a few seconds."
+            />
+          )}
 
-        {result && (
-          <section className="glass-card mt-6 reveal-fade-up">
-            <h2 className="text-xl font-semibold mb-3">Result</h2>
-            <p className="whitespace-pre-line text-muted">{result}</p>
-          </section>
-        )}
+          {!loading && error && <ErrorState title="Generation Failed" description={error} />}
+
+          {!loading && !error && !result && (
+            <EmptyState
+              title="No Result Yet"
+              description="Submit a prompt to generate your first response."
+            />
+          )}
+
+          {!loading && result && (
+            <section className="glass-card reveal-fade-up">
+              <h2 className="text-xl font-semibold mb-3">Result</h2>
+              <p className="whitespace-pre-line text-muted">{result}</p>
+            </section>
+          )}
+        </div>
       </section>
     </div>
   );
