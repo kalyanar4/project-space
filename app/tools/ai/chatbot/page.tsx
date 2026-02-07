@@ -3,15 +3,23 @@ import ToolsNav from "../../ToolsNav";
 
 export default function ChatbotPage() {
   return (
-    <div className="bg-gradient-to-b from-black via-gray-900 to-black text-white min-h-screen p-6 sm:p-12">
+    <div className="page-shell">
       <ToolsNav />
-      <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-3xl sm:text-5xl font-bold mb-8">Chatbot</h1>
-        <p className="text-lg mb-10">Create conversational agents for your site. Coming soon!</p>
-        <Link href="/tools/ai" className="text-accent-color hover:underline">
-          ← Back to AI Tools
+      <section className="page-intro reveal-fade-up">
+        <h1 className="page-title">Chatbot</h1>
+        <p className="page-subtitle">
+          Conversational assistant workflows for product support and lead qualification.
+        </p>
+      </section>
+      <section className="glass-card max-w-3xl mx-auto reveal-fade-up">
+        <p className="text-muted mb-4">This tool is in active planning and currently marked as coming soon.</p>
+        <p className="text-muted mb-6">
+          Commercial purpose: increase support efficiency and capture qualified inbound demand.
+        </p>
+        <Link href="/tools/ai" className="secondary-btn">
+          Back to AI Tools
         </Link>
-      </div>
+      </section>
     </div>
   );
 }

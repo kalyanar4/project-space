@@ -3,15 +3,23 @@ import ToolsNav from "../../ToolsNav";
 
 export default function ImageEnhancerPage() {
   return (
-    <div className="bg-gradient-to-b from-black via-gray-900 to-black text-white min-h-screen p-6 sm:p-12">
+    <div className="page-shell">
       <ToolsNav />
-      <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-3xl sm:text-5xl font-bold mb-8">Image Enhancer</h1>
-        <p className="text-lg mb-10">Improve your images with AI-powered enhancement. Coming soon!</p>
-        <Link href="/tools/ai" className="text-accent-color hover:underline">
-          ← Back to AI Tools
+      <section className="page-intro reveal-fade-up">
+        <h1 className="page-title">Image Enhancer</h1>
+        <p className="page-subtitle">
+          Improve image clarity and quality for product assets and marketing workflows.
+        </p>
+      </section>
+      <section className="glass-card max-w-3xl mx-auto reveal-fade-up">
+        <p className="text-muted mb-4">This tool is in active planning and currently marked as coming soon.</p>
+        <p className="text-muted mb-6">
+          Commercial purpose: improve creative output quality and reduce manual editing time.
+        </p>
+        <Link href="/tools/ai" className="secondary-btn">
+          Back to AI Tools
         </Link>
-      </div>
+      </section>
     </div>
   );
 }

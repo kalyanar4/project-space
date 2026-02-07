@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 export interface NewsItem {
   title: string;
@@ -12,17 +12,12 @@ export default function NewsCard({ item }: { item: NewsItem }) {
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="service-card transition-transform hover:scale-105 flex flex-col"
+      className="service-card reveal-fade-up transition-transform hover:scale-[1.01] flex flex-col"
     >
-      <div className="relative w-full h-40 mb-4">
-        <Image
-          src={item.image}
-          alt={item.title}
-          fill
-          className="object-cover rounded"
-        />
+      <div className="relative w-full h-44 mb-4 overflow-hidden rounded-xl">
+        <Image src={item.image} alt={item.title} fill className="object-cover" />
       </div>
-      <h3 className="text-lg font-semibold text-center">{item.title}</h3>
+      <h3 className="text-lg font-semibold">{item.title}</h3>
     </a>
   );
 }
