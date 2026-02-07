@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Document, Packer, Paragraph } from "docx";
 import { saveAs } from "file-saver";
+import ToolsNav from "../../ToolsNav";
 // Importing the webpack build of pdfjs prevents Next.js from trying to
 // include the optional Node `canvas` package during build time, which
 // previously caused compilation errors. This variant is intended for
@@ -60,8 +61,9 @@ export default function PDFToWordPage() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-black via-gray-900 to-black text-white min-h-screen p-6 sm:p-12">
-      <div className="max-w-4xl mx-auto">
+    <div className="page-shell">
+      <ToolsNav />
+      <div className="max-w-4xl mx-auto w-full">
         <Link href="/tools/pdf" className="text-accent-color hover:underline text-sm">
           ← Back to PDF Tools
         </Link>
@@ -126,4 +128,3 @@ export default function PDFToWordPage() {
     </div>
   );
 }
-

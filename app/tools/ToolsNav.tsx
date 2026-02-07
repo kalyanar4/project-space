@@ -3,15 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { toolCategories } from "../data/toolCategories";
 
 const navItems = [
   { name: "All Tools", path: "/tools" },
-  { name: "PDF Tools", path: "/tools/pdf" },
-  { name: "AI Tools", path: "/tools/ai" },
-  { name: "Dev Utilities", path: "/tools/developer" },
-  { name: "UI Tools", path: "/tools/ui" },
-  { name: "Data Viz", path: "/tools/data" },
-  { name: "Daily Tools", path: "/tools/daily" },
+  ...toolCategories.map((category) => ({
+    name: category.name,
+    path: `/tools/${category.slug}`,
+  })),
 ];
 
 export default function ToolsNav() {

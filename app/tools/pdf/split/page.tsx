@@ -10,6 +10,7 @@ import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import Link from "next/link";
 import Image from "next/image";
+import ToolsNav from "../../ToolsNav";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`;
 
@@ -120,8 +121,9 @@ export default function SplitPDFPage() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-black via-gray-900 to-black text-white min-h-screen p-6 sm:p-12">
-      <div className="max-w-4xl mx-auto">
+    <div className="page-shell">
+      <ToolsNav />
+      <div className="max-w-4xl mx-auto w-full">
         <Link href="/tools/pdf" className="text-accent-color hover:underline text-sm">
           ← Back to PDF Tools
         </Link>

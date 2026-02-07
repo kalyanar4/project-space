@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { afterEach, describe, it } from "node:test";
 
+let cacheBustCounter = 0;
+
 const loadBasePath = async () => {
   const moduleUrl = new URL("./basePath.ts", import.meta.url);
-  const cacheBustedUrl = `${moduleUrl.href}?cacheBust=${Date.now()}`;
+  cacheBustCounter += 1;
+  const cacheBustedUrl = `${moduleUrl.href}?cacheBust=${cacheBustCounter}`;
   return await import(cacheBustedUrl);
 };
 

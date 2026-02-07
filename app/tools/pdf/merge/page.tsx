@@ -19,6 +19,7 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import ToolsNav from "../../ToolsNav";
 
 // Use the webpack-friendly build of pdfjs to avoid the optional Node
 // `canvas` dependency that causes Next.js builds to fail. This build is
@@ -118,8 +119,9 @@ export default function MergePDFPage() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-black via-gray-900 to-black text-white min-h-screen p-6 sm:p-12">
-      <div className="max-w-4xl mx-auto">
+    <div className="page-shell">
+      <ToolsNav />
+      <div className="max-w-4xl mx-auto w-full">
         <Link href="/tools/pdf" className="text-accent-color hover:underline text-sm">
           ← Back to PDF Tools
         </Link>
