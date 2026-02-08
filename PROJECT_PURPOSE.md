@@ -1,12 +1,12 @@
 # Project Purpose
 
 ## Mission
-Digital Meta Zone is a niche productivity platform focused on **AI-assisted content workflows** and **document operations** for creators, developers, and small teams.
+Digital Meta Zone is a niche productivity platform focused on **AI + PDF workflows for freelancers and small agencies**.
 
 ## Predefined niche
-- AI utility workflows (generation, assistant patterns, AI news awareness)
-- PDF/document workflows (merge, split, convert, optimize)
-- Developer-adjacent productivity utilities that reduce repetitive work
+- AI utility workflows for client delivery (generation, assistant patterns, AI news awareness)
+- PDF/document workflows for agency operations (merge, split, convert, optimize)
+- Developer-adjacent utilities that accelerate implementation and handoff quality
 
 ## Why this niche
 - High-frequency pain points with immediate value

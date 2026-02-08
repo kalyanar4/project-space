@@ -10,7 +10,7 @@ export default function Tools() {
       <section className="page-intro reveal-fade-up">
         <h1 className="page-title">Developer Tools</h1>
         <p className="page-subtitle">
-          Our niche is AI and document productivity for creators, developers, and small teams.
+          AI + PDF productivity for freelancers and small agencies.
         </p>
       </section>
 

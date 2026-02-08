@@ -55,10 +55,10 @@ export default function Home() {
       <section className="hero-section reveal-fade-up">
         <div className="hero-content">
           <p className="eyebrow">Digital Meta Zone</p>
-          <h1 className="page-title">AI + Document Productivity Platform</h1>
+          <h1 className="page-title">AI + PDF Productivity for Freelancers and Small Agencies</h1>
           <p className="page-subtitle">
-            Our niche is practical AI and document workflow utilities for creators,
-            developers, and small teams that need fast, reliable execution.
+            We help freelancers and small agencies ship faster with practical AI workflows
+            and reliable PDF utilities in one polished workspace.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/tools" className="primary-btn">
@@ -74,9 +74,9 @@ export default function Home() {
       <section className="glass-card reveal-fade-up">
         <h2 className="text-3xl font-semibold tracking-tight mb-3">Predefined Niche</h2>
         <p className="text-muted">
-          We focus on two high-frequency use-cases: AI-assisted content workflows and
-          in-browser document operations. This keeps product direction sharp and aligns
-          feature development with clear commercial value.
+          Our niche is fixed: AI + PDF productivity for freelancers and small agencies.
+          We prioritize high-frequency client delivery tasks where speed and reliability
+          directly affect revenue.
         </p>
       </section>
 
