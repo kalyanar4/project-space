@@ -1,13 +1,16 @@
 import Link from "next/link";
+import PageAnalytics from "@/components/PageAnalytics";
 import { blogPosts } from "../data/blogPosts";
 
 export default function Blog() {
   return (
     <div className="page-shell">
+      <PageAnalytics event="landing_view" payload={{ page: "/blog" }} />
+
       <section className="page-intro reveal-fade-up">
         <h1 className="page-title">Blog</h1>
         <p className="page-subtitle">
-          Notes on AI workflow design, developer productivity, and digital tooling.
+          Transactional playbooks and workflows for AI + PDF productivity.
         </p>
       </section>
 
@@ -19,17 +22,18 @@ export default function Blog() {
             <p className="text-xs text-muted uppercase tracking-wide mb-2">
               {post.topic} · {post.readTime}
             </p>
-            <h2 className="text-xl font-semibold mb-3">{post.title}</h2>
+            <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
+            <p className="text-xs text-muted mb-3">Intent: {post.intentKeyword}</p>
             <p className="mb-5">{post.description}</p>
             <Link href={`/blog/${post.slug}`} className="secondary-btn">
-              Read More
+              Read Playbook
             </Link>
           </article>
         ))}
       </section>
 
       <section className="cta-section reveal-fade-up">
-        <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Want to Share Your Thoughts?</h2>
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Need help implementing these workflows?</h2>
         <Link href="/contact" className="primary-btn">
           Contact Us
         </Link>

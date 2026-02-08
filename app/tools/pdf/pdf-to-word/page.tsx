@@ -126,6 +126,9 @@ export default function PDFToWordPage() {
         <section className="glass-card mt-5">
           <h3 className="text-lg font-semibold mb-2">Related Guides</h3>
           <div className="flex flex-wrap gap-2">
+            <Link href="/blog/convert-scanned-pdf-to-editable-draft-workflow" className="secondary-btn">
+              Scanned PDF Draft Workflow
+            </Link>
             <Link href="/use-cases/pdf-to-word-contract-edits" className="secondary-btn">
               Convert Contract PDFs
             </Link>

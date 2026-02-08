@@ -87,6 +87,9 @@ export default function TextGeneratorPage() {
         <section className="glass-card mt-5">
           <h3 className="text-lg font-semibold mb-2">Related Guides</h3>
           <div className="flex flex-wrap gap-2">
+            <Link href="/blog/ai-first-client-proposal-drafting-playbook" className="secondary-btn">
+              AI Proposal Drafting Playbook
+            </Link>
             <Link href="/use-cases/ai-proposal-drafts" className="secondary-btn">
               AI Proposal Drafts (Use Case)
             </Link>

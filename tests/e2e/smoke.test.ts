@@ -53,6 +53,12 @@ describe("route integrity", () => {
     assert.equal(uniqueSlugs.size, blogPosts.length, "Duplicate blog slugs found");
   });
 
+  it("includes required transactional week 3.2 blog posts", () => {
+    const titles = new Set(blogPosts.map((post) => post.title));
+    assert.equal(titles.has("How to merge client contracts in 2 mins"), true);
+    assert.equal(titles.has("Convert scanned PDF to editable draft workflow"), true);
+  });
+
   it("keeps tools list data file present", () => {
     assert.equal(exists("app", "data", "toolsList.ts"), true);
   });
@@ -129,5 +135,12 @@ describe("funnel analytics instrumentation", () => {
       assert.match(content, /tool_start/);
       assert.match(content, /Start Free/);
     }
+  });
+
+  it("ensures blog post pages have measurable events and CTA links", () => {
+    const blogPage = fs.readFileSync(routeFile("app", "blog", "[slug]", "page.tsx"), "utf8");
+    assert.match(blogPage, /landing_view/);
+    assert.match(blogPage, /tool_start/);
+    assert.match(blogPage, /primaryCta/);
   });
 });

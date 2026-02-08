@@ -189,6 +189,9 @@ export default function MergePDFPage() {
         <section className="glass-card mt-5">
           <h3 className="text-lg font-semibold mb-2">Related Guides</h3>
           <div className="flex flex-wrap gap-2">
+            <Link href="/blog/merge-client-contracts-in-2-mins" className="secondary-btn">
+              Merge Contracts in 2 Mins
+            </Link>
             <Link href="/use-cases/pdf-merge-client-contracts" className="secondary-btn">
               Merge Client Contracts
             </Link>
