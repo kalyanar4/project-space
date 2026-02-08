@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { trackEvent } from "@/lib/analytics";
+import { trackCoreEvent } from "@/lib/analytics";
 
 interface PostSuccessEmailCaptureProps {
   toolId: string;
@@ -10,9 +10,10 @@ interface PostSuccessEmailCaptureProps {
 
 export default function PostSuccessEmailCapture({ toolId }: PostSuccessEmailCaptureProps) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [message, setMessage] = useState("");
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const normalized = email.trim().toLowerCase();
@@ -20,16 +21,43 @@ export default function PostSuccessEmailCapture({ toolId }: PostSuccessEmailCapt
 
     if (!isValid) {
       setStatus("error");
+      setMessage("Please enter a valid email address.");
       return;
     }
 
-    trackEvent("email_capture", {
-      tool: toolId,
-      source: "post_success",
-    });
+    setStatus("saving");
+    setMessage("");
 
-    setStatus("saved");
-    setEmail("");
+    try {
+      const res = await fetch("/api/email-capture", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: normalized,
+          tool: toolId,
+          source: "post_success",
+        }),
+      });
+
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string };
+        throw new Error(data.error || "Could not save your email at this time.");
+      }
+
+      trackCoreEvent("email_capture", {
+        tool: toolId,
+        source: "post_success",
+      });
+
+      setStatus("saved");
+      setMessage("Thanks. You are on the early updates list.");
+      setEmail("");
+    } catch (error) {
+      setStatus("error");
+      setMessage(error instanceof Error ? error.message : "Could not save your email.");
+    }
   };
 
   return (
@@ -49,22 +77,18 @@ export default function PostSuccessEmailCapture({ toolId }: PostSuccessEmailCapt
           required
         />
         <button type="submit" className="primary-btn">
-          Get Updates
+          {status === "saving" ? "Saving..." : "Get Updates"}
         </button>
       </form>
 
-      {status === "saved" && (
-        <p className="text-sm text-green-500 mt-3">Thanks. You are on the early updates list.</p>
-      )}
-      {status === "error" && (
-        <p className="text-sm text-red-500 mt-3">Please enter a valid email address.</p>
-      )}
+      {status === "saved" && <p className="text-sm text-green-500 mt-3">{message}</p>}
+      {status === "error" && <p className="text-sm text-red-500 mt-3">{message}</p>}
 
       <div className="mt-4">
         <Link
           href="/pricing"
           className="secondary-btn"
-          onClick={() => trackEvent("upgrade_click", { tool: toolId, source: "post_success" })}
+          onClick={() => trackCoreEvent("upgrade_click", { tool: toolId, source: "post_success" })}
         >
           Upgrade to Pro
         </Link>

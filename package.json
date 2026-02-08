@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test --experimental-strip-types lib/basePath.test.ts",
+    "test": "node --test --experimental-strip-types lib/basePath.test.ts app/api/email-capture/route.test.ts",
     "test:e2e": "node --test --experimental-strip-types tests/e2e/smoke.test.ts",
     "test:all": "npm test && npm run test:e2e",
     "update-news": "node scripts/updateNews.js"

@@ -31,7 +31,7 @@ const tiers = [
 export default function PricingPage() {
   return (
     <div className="page-shell">
-      <PageAnalytics event="pricing_view" payload={{ page: "/pricing" }} />
+      <PageAnalytics event="landing_view" payload={{ page: "/pricing" }} />
 
       <section className="page-intro reveal-fade-up">
         <h1 className="page-title">Pricing</h1>
@@ -54,8 +54,8 @@ export default function PricingPage() {
             <TrackedLink
               href={tier.href}
               className="primary-btn"
-              eventName={tier.name === "Pro" ? "upgrade_click" : "start_free_click"}
-              eventPayload={{ tier: tier.name.toLowerCase(), source: "pricing" }}
+              eventName={tier.name === "Pro" ? "upgrade_click" : "tool_start"}
+              eventPayload={{ tier: tier.name.toLowerCase(), source: "pricing", tool: "/tools" }}
             >
               {tier.cta}
             </TrackedLink>

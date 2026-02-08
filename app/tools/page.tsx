@@ -5,7 +5,7 @@ import TrackedLink from "@/components/TrackedLink";
 export default function Tools() {
   return (
     <div className="page-shell">
-      <PageAnalytics event="tools_page_view" payload={{ page: "/tools" }} />
+      <PageAnalytics event="landing_view" payload={{ page: "/tools" }} />
 
       <section className="page-intro reveal-fade-up">
         <h1 className="page-title">Developer Tools</h1>
@@ -22,8 +22,8 @@ export default function Tools() {
             key={tool.name}
             href={tool.path}
             className="service-card reveal-fade-up"
-            eventName="tools_category_click"
-            eventPayload={{ category: tool.name, path: tool.path, status: tool.status }}
+            eventName="tool_start"
+            eventPayload={{ tool: tool.path, category: tool.name, source: "tools_grid" }}
           >
             <div className="flex items-center justify-between gap-2 mb-2">
               <h2 className="text-xl font-semibold">{tool.name}</h2>
@@ -39,7 +39,7 @@ export default function Tools() {
 
       <section className="cta-section reveal-fade-up">
         <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Ready to try the tools?</h2>
-        <TrackedLink href="/tools/developer" className="primary-btn" eventName="tools_start_free_click" eventPayload={{ source: "tools_cta" }}>
+        <TrackedLink href="/tools/developer" className="primary-btn" eventName="tool_start" eventPayload={{ tool: "/tools/developer", source: "tools_cta" }}>
           Start Free
         </TrackedLink>
       </section>

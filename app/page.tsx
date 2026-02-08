@@ -64,7 +64,7 @@ export default function Home() {
             and reliable PDF utilities in one polished workspace.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <TrackedLink href="/tools" className="primary-btn" eventName="start_free_click" eventPayload={{ source: "home_hero" }}>
+            <TrackedLink href="/tools" className="primary-btn" eventName="tool_start" eventPayload={{ tool: "global_tools_entry", source: "home_hero" }}>
               Start Free
             </TrackedLink>
           </div>
@@ -153,7 +153,7 @@ export default function Home() {
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-4">
           Want a smooth production-ready experience for your workflow?
         </h2>
-        <TrackedLink href="/tools" className="primary-btn" eventName="start_free_click" eventPayload={{ source: "home_footer_cta" }}>
+        <TrackedLink href="/tools" className="primary-btn" eventName="tool_start" eventPayload={{ tool: "global_tools_entry", source: "home_footer_cta" }}>
           Start Free
         </TrackedLink>
       </section>

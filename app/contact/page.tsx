@@ -3,7 +3,7 @@ import PageAnalytics from "@/components/PageAnalytics";
 export default function Contact() {
   return (
     <div className="page-shell">
-      <PageAnalytics event="contact_page_view" payload={{ page: "/contact" }} />
+      <PageAnalytics event="landing_view" payload={{ page: "/contact" }} />
 
       <section className="page-intro">
         <h1 className="page-title">Contact</h1>

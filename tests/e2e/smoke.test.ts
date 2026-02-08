@@ -53,18 +53,18 @@ describe("funnel analytics instrumentation", () => {
     const pricing = fs.readFileSync(routeFile("app", "pricing", "page.tsx"), "utf8");
 
     assert.match(home, /landing_view/);
-    assert.match(tools, /tools_category_click/);
+    assert.match(tools, /tool_start/);
     assert.match(pricing, /upgrade_click/);
   });
 
-  it("tracks contact page view", () => {
+  it("tracks contact page as a landing view", () => {
     const content = fs.readFileSync(routeFile("app", "contact", "page.tsx"), "utf8");
-    assert.match(content, /contact_page_view/);
+    assert.match(content, /landing_view/);
   });
 
-  it("tracks join early access clicks for planned categories", () => {
+  it("tracks planned category early access using tool_start", () => {
     const content = fs.readFileSync(routeFile("app", "tools", "[category]", "page.tsx"), "utf8");
-    assert.match(content, /planned_join_early_access_click/);
+    assert.match(content, /tool_start/);
   });
 
   it("tracks tool start and tool success events in hero tools", () => {

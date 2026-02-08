@@ -1,6 +1,6 @@
 # Digital Meta Zone
 
-Digital Meta Zone is a Next.js product focused on a clear niche: **AI-assisted content workflows** and **document productivity tools**.
+Digital Meta Zone is a Next.js product focused on a clear niche: **AI + PDF productivity for freelancers and small agencies**.
 
 ## Niche focus
 - AI utility workflows (text generation, assistant patterns, AI news)
