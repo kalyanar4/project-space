@@ -36,6 +36,7 @@ const links = [
   { name: "Projects", path: "/projects" },
   { name: "Blog", path: "/blog" },
   { name: "Tools", path: "/tools" },
+  { name: "Pricing", path: "/pricing" },
 ];
 
 export default function RootLayout({

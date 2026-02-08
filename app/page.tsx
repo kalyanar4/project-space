@@ -1,4 +1,5 @@
-import Link from "next/link";
+import PageAnalytics from "@/components/PageAnalytics";
+import TrackedLink from "@/components/TrackedLink";
 
 const services = [
   {
@@ -52,6 +53,8 @@ const commercialComponents = [
 export default function Home() {
   return (
     <div className="page-shell">
+      <PageAnalytics event="landing_view" payload={{ page: "/" }} />
+
       <section className="hero-section reveal-fade-up">
         <div className="hero-content">
           <p className="eyebrow">Digital Meta Zone</p>
@@ -61,9 +64,9 @@ export default function Home() {
             and reliable PDF utilities in one polished workspace.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/tools" className="primary-btn">
+            <TrackedLink href="/tools" className="primary-btn" eventName="start_free_click" eventPayload={{ source: "home_hero" }}>
               Start Free
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>
@@ -101,6 +104,37 @@ export default function Home() {
 
       <section className="reveal-fade-up">
         <div className="page-intro mb-8">
+          <h2 className="page-title">Pricing Skeleton</h2>
+          <p className="page-subtitle">Simple structure to validate conversion before full billing rollout.</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 max-w-4xl mx-auto w-full">
+          <article className="glass-card reveal-fade-up">
+            <h3 className="text-2xl font-semibold">Free</h3>
+            <p className="text-3xl font-bold my-3">$0</p>
+            <p className="text-muted">Basic usage limits</p>
+          </article>
+          <article className="glass-card reveal-fade-up">
+            <h3 className="text-2xl font-semibold">Pro</h3>
+            <p className="text-3xl font-bold my-3">$19/mo</p>
+            <p className="text-muted">Higher limits, faster processing, advanced tools</p>
+            <div className="mt-5">
+              <TrackedLink
+                href="/pricing"
+                className="primary-btn"
+                eventName="upgrade_click"
+                eventPayload={{ tier: "pro", source: "home_pricing" }}
+              >
+                View Pro Plan
+              </TrackedLink>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <div className="section-divider" />
+
+      <section className="reveal-fade-up">
+        <div className="page-intro mb-8">
           <h2 className="page-title">Commercial Purpose By Component</h2>
           <p className="page-subtitle">Each product area maps to a business outcome.</p>
         </div>
@@ -119,9 +153,9 @@ export default function Home() {
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-4">
           Want a smooth production-ready experience for your workflow?
         </h2>
-        <Link href="/tools" className="primary-btn">
+        <TrackedLink href="/tools" className="primary-btn" eventName="start_free_click" eventPayload={{ source: "home_footer_cta" }}>
           Start Free
-        </Link>
+        </TrackedLink>
       </section>
     </div>
   );

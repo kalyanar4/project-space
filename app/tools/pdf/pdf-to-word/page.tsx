@@ -7,6 +7,8 @@ import { saveAs } from "file-saver";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import ToolsNav from "../../ToolsNav";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
+import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
+import { trackEvent } from "@/lib/analytics";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
@@ -35,6 +37,7 @@ export default function PDFToWordPage() {
       return;
     }
 
+    trackEvent("tool_start", { tool: "pdf_to_word" });
     setConverting(true);
     setProgress(0);
     setError(null);
@@ -57,6 +60,7 @@ export default function PDFToWordPage() {
       const doc = new Document({ sections: [{ children: paragraphs }] });
       const blob = await Packer.toBlob(doc);
       setWordBlob(blob);
+      trackEvent("tool_success", { tool: "pdf_to_word" });
     } catch {
       setError("Conversion failed. Try another PDF file.");
     } finally {
@@ -138,6 +142,7 @@ export default function PDFToWordPage() {
             >
               Download Word File
             </button>
+            <PostSuccessEmailCapture toolId="pdf_to_word" />
           </div>
         )}
       </div>

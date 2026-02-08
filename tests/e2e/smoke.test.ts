@@ -16,6 +16,7 @@ describe("route integrity", () => {
     assert.equal(exists("app", "tools", "page.tsx"), true);
     assert.equal(exists("app", "contact", "page.tsx"), true);
     assert.equal(exists("app", "blog", "page.tsx"), true);
+    assert.equal(exists("app", "pricing", "page.tsx"), true);
   });
 
   it("has concrete pages for live tool categories", () => {
@@ -46,10 +47,14 @@ describe("route integrity", () => {
 });
 
 describe("funnel analytics instrumentation", () => {
-  it("tracks tools page view and category clicks", () => {
-    const content = fs.readFileSync(routeFile("app", "tools", "page.tsx"), "utf8");
-    assert.match(content, /tools_page_view/);
-    assert.match(content, /tools_category_click/);
+  it("tracks landing and conversion click events", () => {
+    const home = fs.readFileSync(routeFile("app", "page.tsx"), "utf8");
+    const tools = fs.readFileSync(routeFile("app", "tools", "page.tsx"), "utf8");
+    const pricing = fs.readFileSync(routeFile("app", "pricing", "page.tsx"), "utf8");
+
+    assert.match(home, /landing_view/);
+    assert.match(tools, /tools_category_click/);
+    assert.match(pricing, /upgrade_click/);
   });
 
   it("tracks contact page view", () => {
@@ -60,5 +65,31 @@ describe("funnel analytics instrumentation", () => {
   it("tracks join early access clicks for planned categories", () => {
     const content = fs.readFileSync(routeFile("app", "tools", "[category]", "page.tsx"), "utf8");
     assert.match(content, /planned_join_early_access_click/);
+  });
+
+  it("tracks tool start and tool success events in hero tools", () => {
+    const aiTool = fs.readFileSync(routeFile("app", "tools", "ai", "text-generator", "page.tsx"), "utf8");
+    const mergeTool = fs.readFileSync(routeFile("app", "tools", "pdf", "merge", "page.tsx"), "utf8");
+    const pdfToWordTool = fs.readFileSync(routeFile("app", "tools", "pdf", "pdf-to-word", "page.tsx"), "utf8");
+
+    assert.match(aiTool, /tool_start/);
+    assert.match(aiTool, /tool_success/);
+    assert.match(mergeTool, /tool_start/);
+    assert.match(mergeTool, /tool_success/);
+    assert.match(pdfToWordTool, /tool_start/);
+    assert.match(pdfToWordTool, /tool_success/);
+  });
+
+  it("captures email only after successful output sections", () => {
+    const capture = fs.readFileSync(routeFile("components", "PostSuccessEmailCapture.tsx"), "utf8");
+    assert.match(capture, /email_capture/);
+
+    const aiTool = fs.readFileSync(routeFile("app", "tools", "ai", "text-generator", "page.tsx"), "utf8");
+    const mergeTool = fs.readFileSync(routeFile("app", "tools", "pdf", "merge", "page.tsx"), "utf8");
+    const pdfToWordTool = fs.readFileSync(routeFile("app", "tools", "pdf", "pdf-to-word", "page.tsx"), "utf8");
+
+    assert.match(aiTool, /PostSuccessEmailCapture/);
+    assert.match(mergeTool, /PostSuccessEmailCapture/);
+    assert.match(pdfToWordTool, /PostSuccessEmailCapture/);
   });
 });

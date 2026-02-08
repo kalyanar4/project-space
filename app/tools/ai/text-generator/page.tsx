@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import ToolsNav from "../../ToolsNav";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
+import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
+import { trackEvent } from "@/lib/analytics";
 
 export default function TextGeneratorPage() {
   const [prompt, setPrompt] = useState("");
@@ -17,6 +19,7 @@ export default function TextGeneratorPage() {
       return;
     }
 
+    trackEvent("tool_start", { tool: "ai_text_generator" });
     setLoading(true);
     setError(null);
     setResult("");
@@ -33,6 +36,7 @@ export default function TextGeneratorPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error generating text");
       setResult(data.text);
+      trackEvent("tool_success", { tool: "ai_text_generator" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
@@ -93,6 +97,7 @@ export default function TextGeneratorPage() {
             <section className="glass-card reveal-fade-up">
               <h2 className="text-xl font-semibold mb-3">Result</h2>
               <p className="whitespace-pre-line text-muted">{result}</p>
+              <PostSuccessEmailCapture toolId="ai_text_generator" />
             </section>
           )}
         </div>

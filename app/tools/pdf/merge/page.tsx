@@ -22,6 +22,8 @@ import { CSS } from "@dnd-kit/utilities";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import ToolsNav from "../../ToolsNav";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
+import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
+import { trackEvent } from "@/lib/analytics";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
@@ -95,6 +97,7 @@ export default function MergePDFPage() {
       return;
     }
 
+    trackEvent("tool_start", { tool: "pdf_merge" });
     setMerging(true);
     setProgress(0);
     setError(null);
@@ -114,6 +117,7 @@ export default function MergePDFPage() {
       const mergedBytes = await mergedPdf.save();
       const blob = new Blob([mergedBytes], { type: "application/pdf" });
       setMergedBlob(blob);
+      trackEvent("tool_success", { tool: "pdf_merge" });
     } catch {
       setError("Unable to merge PDFs. Please try different files.");
     } finally {
@@ -238,6 +242,7 @@ export default function MergePDFPage() {
             >
               Download Merged PDF
             </button>
+            <PostSuccessEmailCapture toolId="pdf_merge" />
           </div>
         )}
       </div>
