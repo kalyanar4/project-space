@@ -186,6 +186,21 @@ export default function MergePDFPage() {
           reliabilityNote="For best results, use standard PDFs and keep total file size reasonable."
         />
 
+        <section className="glass-card mt-5">
+          <h3 className="text-lg font-semibold mb-2">Related Guides</h3>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/blog/merge-client-contracts-in-2-mins" className="secondary-btn">
+              Merge Contracts in 2 Mins
+            </Link>
+            <Link href="/use-cases/pdf-merge-client-contracts" className="secondary-btn">
+              Merge Client Contracts
+            </Link>
+            <Link href="/compare/pdf-merge-vs-desktop-tools" className="secondary-btn">
+              Online vs Desktop Merge
+            </Link>
+          </div>
+        </section>
+
         <div className="mt-6 grid gap-4">
           {error && <ErrorState title="Merge Error" description={error} />}
 

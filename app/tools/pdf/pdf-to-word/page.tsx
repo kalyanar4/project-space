@@ -123,6 +123,21 @@ export default function PDFToWordPage() {
           reliabilityNote="Complex scanned PDFs may have imperfect extraction; verify the output before sending."
         />
 
+        <section className="glass-card mt-5">
+          <h3 className="text-lg font-semibold mb-2">Related Guides</h3>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/blog/convert-scanned-pdf-to-editable-draft-workflow" className="secondary-btn">
+              Scanned PDF Draft Workflow
+            </Link>
+            <Link href="/use-cases/pdf-to-word-contract-edits" className="secondary-btn">
+              Convert Contract PDFs
+            </Link>
+            <Link href="/compare/pdf-to-word-vs-manual-retyping" className="secondary-btn">
+              Conversion vs Retyping
+            </Link>
+          </div>
+        </section>
+
         <div className="mt-6 grid gap-4">
           {error && <ErrorState title="Conversion Error" description={error} />}
 

@@ -1,0 +1,61 @@
+10 Client Proposal Templates
+
+1. Website Redesign Proposal
+- Problem statement
+- Scope and deliverables
+- Timeline and milestones
+- Pricing and payment terms
+
+2. Monthly Retainer Proposal
+- Retainer objectives
+- Monthly deliverables
+- Reporting cadence
+- Renewal terms
+
+3. AI Workflow Setup Proposal
+- Current process review
+- AI use-case recommendations
+- Implementation plan
+- Adoption and training plan
+
+4. Brand Strategy Proposal
+- Brand audit summary
+- Positioning strategy
+- Messaging framework
+- Rollout plan
+
+5. SEO Growth Proposal
+- Baseline keyword performance
+- Content plan
+- Technical improvements
+- KPI tracking
+
+6. Paid Ads Optimization Proposal
+- Funnel review
+- Campaign restructuring
+- Creative testing plan
+- Budget allocation
+
+7. Product MVP Build Proposal
+- MVP scope
+- User stories
+- Delivery phases
+- Risk and mitigation
+
+8. Analytics and Reporting Proposal
+- Tracking architecture
+- Dashboard plan
+- Decision KPIs
+- Stakeholder cadence
+
+9. Content Production Proposal
+- Content goals
+- Editorial calendar
+- Production workflow
+- Distribution plan
+
+10. Maintenance and Support Proposal
+- Service window
+- Incident response
+- Preventive maintenance tasks
+- SLA and escalation path
