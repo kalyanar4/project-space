@@ -1,5 +1,6 @@
 import PageAnalytics from "@/components/PageAnalytics";
 import TrackedLink from "@/components/TrackedLink";
+import TestimonialsGrid from "@/components/TestimonialsGrid";
 
 const services = [
   {
@@ -147,6 +148,10 @@ export default function Home() {
           Get Free Templates
         </TrackedLink>
       </section>
+
+      <div className="section-divider" />
+
+      <TestimonialsGrid />
 
       <div className="section-divider" />
 

@@ -24,7 +24,7 @@ const tiers = [
       "Advanced AI + PDF workflows",
     ],
     cta: "Upgrade to Pro",
-    href: "/contact",
+    href: "/checkout/pro",
   },
 ];
 

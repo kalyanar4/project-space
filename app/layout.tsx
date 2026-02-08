@@ -18,7 +18,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Digital Meta Portfolio",
+  title: "Digital Meta Zone",
   description: "AI + PDF productivity workflows for freelancers and small agencies.",
   icons: {
     icon: withBasePath("favicon.ico"),
@@ -36,7 +36,9 @@ const links = [
   { name: "Projects", path: "/projects" },
   { name: "Blog", path: "/blog" },
   { name: "Tools", path: "/tools" },
+  { name: "B2B", path: "/b2b" },
   { name: "Pricing", path: "/pricing" },
+  { name: "Growth", path: "/growth/kpis" },
 ];
 
 export default function RootLayout({

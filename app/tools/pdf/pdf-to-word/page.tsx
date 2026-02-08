@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Document, Packer, Paragraph } from "docx";
 import { saveAs } from "file-saver";
@@ -10,7 +10,9 @@ import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
 import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
 import ToolTrustSignals from "@/components/ToolTrustSignals";
 import ToolNextActions from "@/components/ToolNextActions";
+import UpgradePrompt from "@/components/UpgradePrompt";
 import { trackEvent } from "@/lib/analytics";
+import { ToolUsageSnapshot, getToolUsageSnapshot, recordToolSuccess } from "@/lib/toolUsage";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
@@ -21,6 +23,15 @@ export default function PDFToWordPage() {
   const [converting, setConverting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [usage, setUsage] = useState<ToolUsageSnapshot | null>(null);
+  const [showValueUpgrade, setShowValueUpgrade] = useState(false);
+  const [showLimitUpgrade, setShowLimitUpgrade] = useState(false);
+
+  useEffect(() => {
+    const current = getToolUsageSnapshot("pdf_to_word");
+    setUsage(current);
+    setShowLimitUpgrade(current.isLimitReached);
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -36,6 +47,16 @@ export default function PDFToWordPage() {
   const convertPDF = async () => {
     if (!file) {
       setError("Upload a PDF before converting.");
+      return;
+    }
+
+    const current = getToolUsageSnapshot("pdf_to_word");
+    setUsage(current);
+
+    if (current.isLimitReached) {
+      setError("Daily free limit reached. Upgrade to Pro for higher limits.");
+      setShowLimitUpgrade(true);
+      trackEvent("tool_start", { tool: "pdf_to_word", blocked: "limit_hit" });
       return;
     }
 
@@ -63,6 +84,10 @@ export default function PDFToWordPage() {
       const blob = await Packer.toBlob(doc);
       setWordBlob(blob);
       trackEvent("tool_success", { tool: "pdf_to_word" });
+      const nextUsage = recordToolSuccess("pdf_to_word");
+      setUsage(nextUsage);
+      setShowValueUpgrade(nextUsage.totalSuccessCount >= 2);
+      setShowLimitUpgrade(nextUsage.isLimitReached);
     } catch {
       setError("Conversion failed. Try another PDF file.");
     } finally {
@@ -116,6 +141,9 @@ export default function PDFToWordPage() {
             </div>
           )}
         </div>
+        <p className="text-sm text-muted text-center mt-3">
+          Free plan usage today: {usage?.dailySuccessCount ?? 0}/3 successful runs.
+        </p>
 
         <ToolTrustSignals
           privacyNote="Files are processed client-side in this conversion flow and not uploaded by default."
@@ -181,6 +209,12 @@ export default function PDFToWordPage() {
               ]}
             />
             <PostSuccessEmailCapture toolId="pdf_to_word" />
+            {showValueUpgrade && !showLimitUpgrade && (
+              <UpgradePrompt sourceToolId="pdf_to_word" trigger="value_moment" />
+            )}
+            {showLimitUpgrade && (
+              <UpgradePrompt sourceToolId="pdf_to_word" trigger="limit_hit" />
+            )}
           </div>
         )}
       </div>
