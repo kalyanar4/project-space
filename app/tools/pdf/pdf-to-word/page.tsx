@@ -8,6 +8,8 @@ import * as pdfjsLib from "pdfjs-dist/webpack";
 import ToolsNav from "../../ToolsNav";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
 import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
+import ToolTrustSignals from "@/components/ToolTrustSignals";
+import ToolNextActions from "@/components/ToolNextActions";
 import { trackEvent } from "@/lib/analytics";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -115,6 +117,12 @@ export default function PDFToWordPage() {
           )}
         </div>
 
+        <ToolTrustSignals
+          privacyNote="Files are processed client-side in this conversion flow and not uploaded by default."
+          processingNote="Text extraction and DOCX generation happen directly in your browser."
+          reliabilityNote="Complex scanned PDFs may have imperfect extraction; verify the output before sending."
+        />
+
         <div className="mt-6 grid gap-4">
           {error && <ErrorState title="Conversion Error" description={error} />}
 
@@ -142,6 +150,21 @@ export default function PDFToWordPage() {
             >
               Download Word File
             </button>
+            <ToolNextActions
+              sourceToolId="pdf_to_word"
+              actions={[
+                {
+                  title: "Try Split PDF",
+                  description: "Split source PDFs into smaller sections before converting large files.",
+                  href: "/tools/pdf/split",
+                },
+                {
+                  title: "Generate summary with AI",
+                  description: "Paste converted text into AI Text Generator for executive summaries.",
+                  href: "/tools/ai/text-generator",
+                },
+              ]}
+            />
             <PostSuccessEmailCapture toolId="pdf_to_word" />
           </div>
         )}

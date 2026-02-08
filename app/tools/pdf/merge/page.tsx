@@ -23,6 +23,8 @@ import * as pdfjsLib from "pdfjs-dist/webpack";
 import ToolsNav from "../../ToolsNav";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
 import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
+import ToolTrustSignals from "@/components/ToolTrustSignals";
+import ToolNextActions from "@/components/ToolNextActions";
 import { trackEvent } from "@/lib/analytics";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -178,6 +180,12 @@ export default function MergePDFPage() {
           </label>
         </div>
 
+        <ToolTrustSignals
+          privacyNote="Your files stay in the browser and are not uploaded by this merge workflow."
+          processingNote="PDF merge operations execute locally in your browser session."
+          reliabilityNote="For best results, use standard PDFs and keep total file size reasonable."
+        />
+
         <div className="mt-6 grid gap-4">
           {error && <ErrorState title="Merge Error" description={error} />}
 
@@ -242,6 +250,21 @@ export default function MergePDFPage() {
             >
               Download Merged PDF
             </button>
+            <ToolNextActions
+              sourceToolId="pdf_merge"
+              actions={[
+                {
+                  title: "Try Split PDF",
+                  description: "Split the merged output into page-level files for client handoff.",
+                  href: "/tools/pdf/split",
+                },
+                {
+                  title: "Generate summary with AI",
+                  description: "Summarize the merged document with AI for faster review.",
+                  href: "/tools/ai/text-generator",
+                },
+              ]}
+            />
             <PostSuccessEmailCapture toolId="pdf_merge" />
           </div>
         )}

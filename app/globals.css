@@ -409,6 +409,17 @@ form textarea::placeholder {
   color: var(--muted);
 }
 
+.trust-signals {
+  margin-top: 1.2rem;
+}
+
+.trust-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.9rem;
+  background: var(--surface-strong);
+}
+
 ul,
 li {
   list-style: none;
