@@ -38,9 +38,9 @@ export default function Tools() {
       </section>
 
       <section className="cta-section reveal-fade-up">
-        <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Need a specific workflow?</h2>
-        <TrackedLink href="/contact" className="primary-btn" eventName="tools_request_tool_click" eventPayload={{ source: "tools_cta" }}>
-          Request a Tool
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Ready to try the tools?</h2>
+        <TrackedLink href="/tools/developer" className="primary-btn" eventName="tools_start_free_click" eventPayload={{ source: "tools_cta" }}>
+          Start Free
         </TrackedLink>
       </section>
     </div>

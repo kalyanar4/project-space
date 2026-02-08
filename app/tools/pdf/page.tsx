@@ -42,9 +42,9 @@ export default function PDFToolsPage() {
       </section>
 
       <section className="cta-section reveal-fade-up">
-        <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Need a Specific PDF Tool?</h2>
-        <Link href="/contact" className="primary-btn">
-          Suggest It
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Start with the most used PDF workflow</h2>
+        <Link href="/tools/pdf/merge" className="primary-btn">
+          Start Free
         </Link>
       </section>
     </div>

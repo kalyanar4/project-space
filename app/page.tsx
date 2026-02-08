@@ -62,10 +62,7 @@ export default function Home() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/tools" className="primary-btn">
-              Explore Tools
-            </Link>
-            <Link href="/projects" className="secondary-btn">
-              View Projects
+              Start Free
             </Link>
           </div>
         </div>
@@ -122,8 +119,8 @@ export default function Home() {
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-4">
           Want a smooth production-ready experience for your workflow?
         </h2>
-        <Link href="/contact" className="primary-btn">
-          Talk to Us
+        <Link href="/tools" className="primary-btn">
+          Start Free
         </Link>
       </section>
     </div>
