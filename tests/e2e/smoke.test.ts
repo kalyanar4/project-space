@@ -9,6 +9,14 @@ const root = process.cwd();
 
 const routeFile = (...segments: string[]) => path.join(root, ...segments);
 const exists = (...segments: string[]) => fs.existsSync(routeFile(...segments));
+const seoPages = [
+  ["app", "use-cases", "pdf-merge-client-contracts", "page.tsx"],
+  ["app", "use-cases", "pdf-to-word-contract-edits", "page.tsx"],
+  ["app", "use-cases", "ai-proposal-drafts", "page.tsx"],
+  ["app", "compare", "pdf-merge-vs-desktop-tools", "page.tsx"],
+  ["app", "compare", "pdf-to-word-vs-manual-retyping", "page.tsx"],
+  ["app", "compare", "ai-text-generator-vs-blank-page", "page.tsx"],
+] as const;
 
 describe("route integrity", () => {
   it("has core app routes", () => {
@@ -47,6 +55,12 @@ describe("route integrity", () => {
 
   it("keeps tools list data file present", () => {
     assert.equal(exists("app", "data", "toolsList.ts"), true);
+  });
+
+  it("has all week 3.1 SEO landing pages", () => {
+    for (const page of seoPages) {
+      assert.equal(exists(...page), true, `Missing SEO page: ${page.join("/")}`);
+    }
   });
 });
 
@@ -106,5 +120,14 @@ describe("funnel analytics instrumentation", () => {
     assert.match(leadMagnet, /tool_start/);
     assert.match(leadMagnet, /email_capture/);
     assert.match(leadMagnet, /tool_success/);
+  });
+
+  it("ensures each SEO page has one measurable event and CTA", () => {
+    for (const page of seoPages) {
+      const content = fs.readFileSync(routeFile(...page), "utf8");
+      assert.match(content, /landing_view/);
+      assert.match(content, /tool_start/);
+      assert.match(content, /Start Free/);
+    }
   });
 });

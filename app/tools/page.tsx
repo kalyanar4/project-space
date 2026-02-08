@@ -23,6 +23,33 @@ const heroTools = [
   },
 ];
 
+const seoPages = [
+  {
+    title: "Merge Client Contracts (Use Case)",
+    path: "/use-cases/pdf-merge-client-contracts",
+  },
+  {
+    title: "PDF Merge: Online vs Desktop (Comparison)",
+    path: "/compare/pdf-merge-vs-desktop-tools",
+  },
+  {
+    title: "Convert PDF Contracts to Word (Use Case)",
+    path: "/use-cases/pdf-to-word-contract-edits",
+  },
+  {
+    title: "PDF to Word vs Manual Retyping (Comparison)",
+    path: "/compare/pdf-to-word-vs-manual-retyping",
+  },
+  {
+    title: "AI Proposal Drafts (Use Case)",
+    path: "/use-cases/ai-proposal-drafts",
+  },
+  {
+    title: "AI Text vs Blank Page (Comparison)",
+    path: "/compare/ai-text-generator-vs-blank-page",
+  },
+];
+
 export default function Tools() {
   return (
     <div className="page-shell">
@@ -58,6 +85,29 @@ export default function Tools() {
                 Open Hero Tool
               </TrackedLink>
             </article>
+          ))}
+        </div>
+      </section>
+
+      <div className="section-divider" />
+
+      <section className="reveal-fade-up">
+        <div className="page-intro mb-6">
+          <h2 className="page-title">Guides and Comparisons</h2>
+          <p className="page-subtitle">SEO landing pages mapped to high-intent workflows.</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-grid">
+          {seoPages.map((page) => (
+            <TrackedLink
+              key={page.path}
+              href={page.path}
+              className="service-card reveal-fade-up"
+              eventName="tool_start"
+              eventPayload={{ tool: page.path, source: "tools_seo_grid" }}
+            >
+              <h3 className="text-lg font-semibold mb-2">{page.title}</h3>
+              <p className="text-sm text-muted">Open Guide</p>
+            </TrackedLink>
           ))}
         </div>
       </section>
