@@ -34,9 +34,9 @@ export default function AIToolsPage() {
       </section>
 
       <section className="cta-section reveal-fade-up">
-        <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Have an AI Tool Idea?</h2>
-        <Link href="/contact" className="primary-btn">
-          Suggest It
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Start with the fastest AI workflow</h2>
+        <Link href="/tools/ai/text-generator" className="primary-btn">
+          Start Free
         </Link>
       </section>
     </div>

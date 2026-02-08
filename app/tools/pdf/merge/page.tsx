@@ -22,6 +22,10 @@ import { CSS } from "@dnd-kit/utilities";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import ToolsNav from "../../ToolsNav";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
+import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
+import ToolTrustSignals from "@/components/ToolTrustSignals";
+import ToolNextActions from "@/components/ToolNextActions";
+import { trackEvent } from "@/lib/analytics";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
@@ -95,6 +99,7 @@ export default function MergePDFPage() {
       return;
     }
 
+    trackEvent("tool_start", { tool: "pdf_merge" });
     setMerging(true);
     setProgress(0);
     setError(null);
@@ -114,6 +119,7 @@ export default function MergePDFPage() {
       const mergedBytes = await mergedPdf.save();
       const blob = new Blob([mergedBytes], { type: "application/pdf" });
       setMergedBlob(blob);
+      trackEvent("tool_success", { tool: "pdf_merge" });
     } catch {
       setError("Unable to merge PDFs. Please try different files.");
     } finally {
@@ -173,6 +179,12 @@ export default function MergePDFPage() {
             Click or drag PDF files here to upload
           </label>
         </div>
+
+        <ToolTrustSignals
+          privacyNote="Your files stay in the browser and are not uploaded by this merge workflow."
+          processingNote="PDF merge operations execute locally in your browser session."
+          reliabilityNote="For best results, use standard PDFs and keep total file size reasonable."
+        />
 
         <div className="mt-6 grid gap-4">
           {error && <ErrorState title="Merge Error" description={error} />}
@@ -238,6 +250,22 @@ export default function MergePDFPage() {
             >
               Download Merged PDF
             </button>
+            <ToolNextActions
+              sourceToolId="pdf_merge"
+              actions={[
+                {
+                  title: "Try Split PDF",
+                  description: "Split the merged output into page-level files for client handoff.",
+                  href: "/tools/pdf/split",
+                },
+                {
+                  title: "Generate summary with AI",
+                  description: "Summarize the merged document with AI for faster review.",
+                  href: "/tools/ai/text-generator",
+                },
+              ]}
+            />
+            <PostSuccessEmailCapture toolId="pdf_merge" />
           </div>
         )}
       </div>

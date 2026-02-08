@@ -4,6 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import ToolsNav from "../../ToolsNav";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
+import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
+import ToolTrustSignals from "@/components/ToolTrustSignals";
+import ToolNextActions from "@/components/ToolNextActions";
+import { trackEvent } from "@/lib/analytics";
 
 export default function TextGeneratorPage() {
   const [prompt, setPrompt] = useState("");
@@ -17,6 +21,7 @@ export default function TextGeneratorPage() {
       return;
     }
 
+    trackEvent("tool_start", { tool: "ai_text_generator" });
     setLoading(true);
     setError(null);
     setResult("");
@@ -33,6 +38,7 @@ export default function TextGeneratorPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error generating text");
       setResult(data.text);
+      trackEvent("tool_success", { tool: "ai_text_generator" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
@@ -72,6 +78,12 @@ export default function TextGeneratorPage() {
           </div>
         </div>
 
+        <ToolTrustSignals
+          privacyNote="Prompts are processed securely for generation and are not shown publicly."
+          processingNote="This workflow runs via our AI API backend to generate model responses."
+          reliabilityNote="If generation fails, retry with a shorter and more specific prompt."
+        />
+
         <div className="mt-6">
           {loading && (
             <LoadingState
@@ -93,6 +105,22 @@ export default function TextGeneratorPage() {
             <section className="glass-card reveal-fade-up">
               <h2 className="text-xl font-semibold mb-3">Result</h2>
               <p className="whitespace-pre-line text-muted">{result}</p>
+              <ToolNextActions
+                sourceToolId="ai_text_generator"
+                actions={[
+                  {
+                    title: "Try Split PDF",
+                    description: "Break long documents into sections before creating AI summaries.",
+                    href: "/tools/pdf/split",
+                  },
+                  {
+                    title: "Generate summary with AI",
+                    description: "Run another pass with a concise summary prompt for client-ready output.",
+                    href: "/tools/ai/text-generator",
+                  },
+                ]}
+              />
+              <PostSuccessEmailCapture toolId="ai_text_generator" />
             </section>
           )}
         </div>

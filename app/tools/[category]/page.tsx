@@ -39,8 +39,8 @@ export default async function ToolCategoryPage({ params }: ToolCategoryPageProps
           <TrackedLink
             href="/contact"
             className="primary-btn"
-            eventName="planned_join_early_access_click"
-            eventPayload={{ category: category.slug }}
+            eventName="tool_start"
+            eventPayload={{ tool: `/tools/${category.slug}`, source: "planned_early_access" }}
           >
             Join Early Access
           </TrackedLink>
