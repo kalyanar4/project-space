@@ -86,7 +86,7 @@ export default function PostSuccessEmailCapture({ toolId }: PostSuccessEmailCapt
 
       <div className="mt-4">
         <Link
-          href="/pricing"
+          href="/checkout/pro"
           className="secondary-btn"
           onClick={() => trackCoreEvent("upgrade_click", { tool: toolId, source: "post_success" })}
         >

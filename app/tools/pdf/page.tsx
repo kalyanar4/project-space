@@ -1,10 +1,13 @@
-import Link from "next/link";
 import { pdfTools } from "../../data/pdfTools";
 import ToolsNav from "../ToolsNav";
+import PageAnalytics from "@/components/PageAnalytics";
+import TrackedLink from "@/components/TrackedLink";
+import TestimonialsGrid from "@/components/TestimonialsGrid";
 
 export default function PDFToolsPage() {
   return (
     <div className="page-shell">
+      <PageAnalytics event="landing_view" payload={{ page: "/tools/pdf" }} />
       <ToolsNav />
 
       <section className="page-intro reveal-fade-up">
@@ -27,25 +30,31 @@ export default function PDFToolsPage() {
               <p>{tool.description}</p>
             </div>
             <div>
-              {tool.comingSoon ? (
-                <Link href={`/tools/pdf/${tool.slug}`} className="secondary-btn">
-                  View Details
-                </Link>
-              ) : (
-                <Link href={`/tools/pdf/${tool.slug}`} className="primary-btn">
-                  Open Tool
-                </Link>
-              )}
+              <TrackedLink
+                href={`/tools/pdf/${tool.slug}`}
+                className={tool.comingSoon ? "secondary-btn" : "primary-btn"}
+                eventName="tool_start"
+                eventPayload={{ tool: `/tools/pdf/${tool.slug}`, source: "pdf_tools_grid" }}
+              >
+                {tool.comingSoon ? "View Details" : "Open Tool"}
+              </TrackedLink>
             </div>
           </article>
         ))}
       </section>
 
+      <TestimonialsGrid title="What PDF Tool Users Say" />
+
       <section className="cta-section reveal-fade-up">
         <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Start with the most used PDF workflow</h2>
-        <Link href="/tools/pdf/merge" className="primary-btn">
+        <TrackedLink
+          href="/tools/pdf/merge"
+          className="primary-btn"
+          eventName="tool_start"
+          eventPayload={{ tool: "/tools/pdf/merge", source: "pdf_category_cta" }}
+        >
           Start Free
-        </Link>
+        </TrackedLink>
       </section>
     </div>
   );

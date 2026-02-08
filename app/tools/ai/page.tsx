@@ -1,10 +1,13 @@
-import Link from "next/link";
 import { aiTools } from "../../data/aiTools";
 import ToolsNav from "../ToolsNav";
+import PageAnalytics from "@/components/PageAnalytics";
+import TrackedLink from "@/components/TrackedLink";
+import TestimonialsGrid from "@/components/TestimonialsGrid";
 
 export default function AIToolsPage() {
   return (
     <div className="page-shell">
+      <PageAnalytics event="landing_view" payload={{ page: "/tools/ai" }} />
       <ToolsNav />
       <section className="page-intro reveal-fade-up">
         <h1 className="page-title">AI Tools</h1>
@@ -24,20 +27,32 @@ export default function AIToolsPage() {
               {tool.comingSoon ? (
                 <span className="secondary-btn opacity-65 cursor-not-allowed">Coming Soon</span>
               ) : (
-                <Link href={`/tools/ai/${tool.slug}`} className="primary-btn">
+                <TrackedLink
+                  href={`/tools/ai/${tool.slug}`}
+                  className="primary-btn"
+                  eventName="tool_start"
+                  eventPayload={{ tool: `/tools/ai/${tool.slug}`, source: "ai_tools_grid" }}
+                >
                   Open Tool
-                </Link>
+                </TrackedLink>
               )}
             </div>
           </article>
         ))}
       </section>
 
+      <TestimonialsGrid title="What AI Tool Users Say" />
+
       <section className="cta-section reveal-fade-up">
         <h2 className="text-2xl sm:text-3xl font-semibold mb-4">Start with the fastest AI workflow</h2>
-        <Link href="/tools/ai/text-generator" className="primary-btn">
+        <TrackedLink
+          href="/tools/ai/text-generator"
+          className="primary-btn"
+          eventName="tool_start"
+          eventPayload={{ tool: "/tools/ai/text-generator", source: "ai_category_cta" }}
+        >
           Start Free
-        </Link>
+        </TrackedLink>
       </section>
     </div>
   );

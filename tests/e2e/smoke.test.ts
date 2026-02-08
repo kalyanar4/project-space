@@ -25,6 +25,10 @@ describe("route integrity", () => {
     assert.equal(exists("app", "contact", "page.tsx"), true);
     assert.equal(exists("app", "blog", "page.tsx"), true);
     assert.equal(exists("app", "pricing", "page.tsx"), true);
+    assert.equal(exists("app", "checkout", "pro", "page.tsx"), true);
+    assert.equal(exists("app", "b2b", "page.tsx"), true);
+    assert.equal(exists("app", "growth", "distribution", "page.tsx"), true);
+    assert.equal(exists("app", "growth", "kpis", "page.tsx"), true);
     assert.equal(
       exists("app", "lead-magnets", "proposal-templates", "page.tsx"),
       true
@@ -142,5 +146,39 @@ describe("funnel analytics instrumentation", () => {
     assert.match(blogPage, /landing_view/);
     assert.match(blogPage, /tool_start/);
     assert.match(blogPage, /primaryCta/);
+  });
+
+  it("implements week 4 value-moment monetization and B2B routes", () => {
+    const pricing = fs.readFileSync(routeFile("app", "pricing", "page.tsx"), "utf8");
+    const aiTool = fs.readFileSync(routeFile("app", "tools", "ai", "text-generator", "page.tsx"), "utf8");
+    const mergeTool = fs.readFileSync(routeFile("app", "tools", "pdf", "merge", "page.tsx"), "utf8");
+    const pdfToWordTool = fs.readFileSync(routeFile("app", "tools", "pdf", "pdf-to-word", "page.tsx"), "utf8");
+    const checkout = fs.readFileSync(routeFile("app", "checkout", "pro", "page.tsx"), "utf8");
+    const b2b = fs.readFileSync(routeFile("app", "b2b", "page.tsx"), "utf8");
+
+    assert.match(pricing, /checkout\/pro/);
+    assert.match(checkout, /checkout_complete/);
+    assert.match(b2b, /landing_view/);
+    assert.match(b2b, /Book Demo/);
+    assert.match(aiTool, /UpgradePrompt/);
+    assert.match(mergeTool, /UpgradePrompt/);
+    assert.match(pdfToWordTool, /UpgradePrompt/);
+    assert.match(aiTool, /getToolUsageSnapshot/);
+    assert.match(mergeTool, /getToolUsageSnapshot/);
+    assert.match(pdfToWordTool, /getToolUsageSnapshot/);
+  });
+
+  it("implements week 5 KPI dashboard and analytics persistence", () => {
+    const analytics = fs.readFileSync(routeFile("lib", "analytics.ts"), "utf8");
+    const kpisPage = fs.readFileSync(routeFile("app", "growth", "kpis", "page.tsx"), "utf8");
+    const kpisComponent = fs.readFileSync(routeFile("components", "GrowthKpiDashboard.tsx"), "utf8");
+    const runbook = fs.readFileSync(routeFile("WEEK5_OPERATIONS.md"), "utf8");
+
+    assert.match(analytics, /dmz_analytics_events/);
+    assert.match(analytics, /getStoredAnalyticsEvents/);
+    assert.match(kpisPage, /landing_view/);
+    assert.match(kpisComponent, /Activation Rate/);
+    assert.match(kpisComponent, /Revenue per 1000 Visitors/);
+    assert.match(runbook, /Weekly Review Cadence/);
   });
 });

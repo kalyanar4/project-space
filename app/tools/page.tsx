@@ -141,6 +141,31 @@ export default function Tools() {
           Start Free
         </TrackedLink>
       </section>
+
+      <section className="glass-card reveal-fade-up">
+        <h2 className="text-2xl font-semibold mb-2">Growth + Monetization Control Center</h2>
+        <p className="text-muted mb-4">
+          Track Week 3 distribution execution and Week 5 KPI performance from one place.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <TrackedLink
+            href="/growth/distribution"
+            className="secondary-btn"
+            eventName="tool_start"
+            eventPayload={{ tool: "/growth/distribution", source: "tools_growth_block" }}
+          >
+            Distribution Plan
+          </TrackedLink>
+          <TrackedLink
+            href="/growth/kpis"
+            className="primary-btn"
+            eventName="tool_start"
+            eventPayload={{ tool: "/growth/kpis", source: "tools_growth_block" }}
+          >
+            Open KPI Dashboard
+          </TrackedLink>
+        </div>
+      </section>
     </div>
   );
 }

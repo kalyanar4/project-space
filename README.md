@@ -91,6 +91,16 @@ This project supports subpath deployments (for example GitHub Pages).
 - Start outbound to small agencies (20/day for 5 days) with short demo clip.
 - Add testimonials/early user quotes to homepage + tool pages.
 
+### Week 5: KPI Operations + Iteration Loop
+- Add KPI dashboard route for weekly review:
+  - activation rate
+  - 7-day return signal
+  - free to paid conversion
+  - lead capture rate post-success
+  - revenue per 1000 visitors
+- Persist analytics events client-side for rapid diagnostics.
+- Add execution runbook for weekly review and go/no-go decisions.
+
 ### KPIs to Track Weekly
 - Activation rate: visitor → first successful output
 - Retention: 7-day return rate
@@ -107,3 +117,9 @@ This project supports subpath deployments (for example GitHub Pages).
   - one measurable event
 
 If you want, I can now convert this into a task board (exact tickets by day) and start implementing Week 1 directly.
+
+## Growth Operations Routes
+- `/growth/distribution` - Week 3 channel distribution playbook
+- `/checkout/pro` - Week 4 Pro checkout entry
+- `/b2b` - Week 4 team/agency landing page
+- `/growth/kpis` - Week 5 KPI dashboard

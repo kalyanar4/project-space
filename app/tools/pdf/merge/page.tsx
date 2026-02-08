@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import Link from "next/link";
 import Image from "next/image";
@@ -25,7 +25,9 @@ import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
 import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
 import ToolTrustSignals from "@/components/ToolTrustSignals";
 import ToolNextActions from "@/components/ToolNextActions";
+import UpgradePrompt from "@/components/UpgradePrompt";
 import { trackEvent } from "@/lib/analytics";
+import { ToolUsageSnapshot, getToolUsageSnapshot, recordToolSuccess } from "@/lib/toolUsage";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
@@ -39,8 +41,17 @@ export default function MergePDFPage() {
   const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [usage, setUsage] = useState<ToolUsageSnapshot | null>(null);
+  const [showValueUpgrade, setShowValueUpgrade] = useState(false);
+  const [showLimitUpgrade, setShowLimitUpgrade] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor));
+
+  useEffect(() => {
+    const current = getToolUsageSnapshot("pdf_merge");
+    setUsage(current);
+    setShowLimitUpgrade(current.isLimitReached);
+  }, []);
 
   const generateThumbnail = async (file: FileWithId) => {
     const reader = new FileReader();
@@ -99,6 +110,16 @@ export default function MergePDFPage() {
       return;
     }
 
+    const current = getToolUsageSnapshot("pdf_merge");
+    setUsage(current);
+
+    if (current.isLimitReached) {
+      setError("Daily free limit reached. Upgrade to Pro for higher limits.");
+      setShowLimitUpgrade(true);
+      trackEvent("tool_start", { tool: "pdf_merge", blocked: "limit_hit" });
+      return;
+    }
+
     trackEvent("tool_start", { tool: "pdf_merge" });
     setMerging(true);
     setProgress(0);
@@ -120,6 +141,10 @@ export default function MergePDFPage() {
       const blob = new Blob([mergedBytes], { type: "application/pdf" });
       setMergedBlob(blob);
       trackEvent("tool_success", { tool: "pdf_merge" });
+      const nextUsage = recordToolSuccess("pdf_merge");
+      setUsage(nextUsage);
+      setShowValueUpgrade(nextUsage.totalSuccessCount >= 2);
+      setShowLimitUpgrade(nextUsage.isLimitReached);
     } catch {
       setError("Unable to merge PDFs. Please try different files.");
     } finally {
@@ -179,6 +204,9 @@ export default function MergePDFPage() {
             Click or drag PDF files here to upload
           </label>
         </div>
+        <p className="text-sm text-muted text-center mt-3">
+          Free plan usage today: {usage?.dailySuccessCount ?? 0}/3 successful runs.
+        </p>
 
         <ToolTrustSignals
           privacyNote="Your files stay in the browser and are not uploaded by this merge workflow."
@@ -281,6 +309,12 @@ export default function MergePDFPage() {
               ]}
             />
             <PostSuccessEmailCapture toolId="pdf_merge" />
+            {showValueUpgrade && !showLimitUpgrade && (
+              <UpgradePrompt sourceToolId="pdf_merge" trigger="value_moment" />
+            )}
+            {showLimitUpgrade && (
+              <UpgradePrompt sourceToolId="pdf_merge" trigger="limit_hit" />
+            )}
           </div>
         )}
       </div>

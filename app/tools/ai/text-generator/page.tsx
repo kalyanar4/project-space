@@ -1,23 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import ToolsNav from "../../ToolsNav";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
 import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
 import ToolTrustSignals from "@/components/ToolTrustSignals";
 import ToolNextActions from "@/components/ToolNextActions";
+import UpgradePrompt from "@/components/UpgradePrompt";
 import { trackEvent } from "@/lib/analytics";
+import { ToolUsageSnapshot, getToolUsageSnapshot, recordToolSuccess } from "@/lib/toolUsage";
 
 export default function TextGeneratorPage() {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [usage, setUsage] = useState<ToolUsageSnapshot | null>(null);
+  const [showValueUpgrade, setShowValueUpgrade] = useState(false);
+  const [showLimitUpgrade, setShowLimitUpgrade] = useState(false);
+
+  useEffect(() => {
+    const current = getToolUsageSnapshot("ai_text_generator");
+    setUsage(current);
+    setShowLimitUpgrade(current.isLimitReached);
+  }, []);
 
   const generate = async () => {
     if (!prompt.trim()) {
       setError("Please enter a prompt.");
+      return;
+    }
+
+    const current = getToolUsageSnapshot("ai_text_generator");
+    setUsage(current);
+
+    if (current.isLimitReached) {
+      setError("Daily free limit reached. Upgrade to Pro for higher limits.");
+      setShowLimitUpgrade(true);
+      trackEvent("tool_start", { tool: "ai_text_generator", blocked: "limit_hit" });
       return;
     }
 
@@ -39,6 +60,10 @@ export default function TextGeneratorPage() {
       if (!res.ok) throw new Error(data.error || "Error generating text");
       setResult(data.text);
       trackEvent("tool_success", { tool: "ai_text_generator" });
+      const nextUsage = recordToolSuccess("ai_text_generator");
+      setUsage(nextUsage);
+      setShowValueUpgrade(nextUsage.totalSuccessCount >= 2);
+      setShowLimitUpgrade(nextUsage.isLimitReached);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
@@ -76,6 +101,9 @@ export default function TextGeneratorPage() {
               {loading ? "Generating..." : "Generate Text"}
             </button>
           </div>
+          <p className="text-sm text-muted text-center mt-3">
+            Free plan usage today: {usage?.dailySuccessCount ?? 0}/3 successful runs.
+          </p>
         </div>
 
         <ToolTrustSignals
@@ -136,6 +164,12 @@ export default function TextGeneratorPage() {
                 ]}
               />
               <PostSuccessEmailCapture toolId="ai_text_generator" />
+              {showValueUpgrade && !showLimitUpgrade && (
+                <UpgradePrompt sourceToolId="ai_text_generator" trigger="value_moment" />
+              )}
+              {showLimitUpgrade && (
+                <UpgradePrompt sourceToolId="ai_text_generator" trigger="limit_hit" />
+              )}
             </section>
           )}
         </div>
