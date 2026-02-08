@@ -19,12 +19,10 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import ToolsNav from "../../ToolsNav";
-
-// Use the webpack-friendly build of pdfjs to avoid the optional Node
-// `canvas` dependency that causes Next.js builds to fail. This build is
-// meant for browser environments and works seamlessly in production.
 import * as pdfjsLib from "pdfjs-dist/webpack";
+import ToolsNav from "../../ToolsNav";
+import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
+
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
 
@@ -32,41 +30,54 @@ type FileWithId = File & { id: string };
 
 export default function MergePDFPage() {
   const [files, setFiles] = useState<FileWithId[]>([]);
-  const [thumbnails, setThumbnails] = useState<{ [id: string]: string }>({});
+  const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
   const [merging, setMerging] = useState(false);
   const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
   const [progress, setProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
   const generateThumbnail = async (file: FileWithId) => {
     const reader = new FileReader();
     reader.onload = async () => {
-      const typedarray = new Uint8Array(reader.result as ArrayBuffer);
-      const pdf = await pdfjsLib.getDocument(typedarray).promise;
-      const page = await pdf.getPage(1);
-      const viewport = page.getViewport({ scale: 0.5 });
-      const canvas = document.createElement("canvas");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+      try {
+        const typedarray = new Uint8Array(reader.result as ArrayBuffer);
+        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 0.5 });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-      const ctx = canvas.getContext("2d")!;
-      await page.render({ canvasContext: ctx, viewport }).promise;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        await page.render({ canvasContext: ctx, viewport }).promise;
 
-      setThumbnails((prev) => ({
-        ...prev,
-        [file.id]: canvas.toDataURL(),
-      }));
+        setThumbnails((prev) => ({
+          ...prev,
+          [file.id]: canvas.toDataURL(),
+        }));
+      } catch {
+        setError("Failed to generate preview thumbnails for one or more files.");
+      }
     };
     reader.readAsArrayBuffer(file);
   };
 
   const handleFiles = (newFiles: FileList | null) => {
     if (!newFiles) return;
+
     const validPDFs = Array.from(newFiles)
       .filter((file) => file.type === "application/pdf")
       .map((file) => Object.assign(file, { id: crypto.randomUUID() }));
 
+    if (!validPDFs.length) {
+      setError("Please upload valid PDF files.");
+      return;
+    }
+
+    setError(null);
     validPDFs.forEach(generateThumbnail);
     setFiles((prev) => [...prev, ...validPDFs]);
     setMergedBlob(null);
@@ -79,24 +90,35 @@ export default function MergePDFPage() {
   };
 
   const mergePDFs = async () => {
-    setMerging(true);
-    setProgress(0);
-    const mergedPdf = await PDFDocument.create();
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const bytes = await file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes);
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      copiedPages.forEach((page) => mergedPdf.addPage(page));
-      setProgress(Math.round(((i + 1) / files.length) * 100));
-      await new Promise((r) => setTimeout(r, 50));
+    if (files.length < 2) {
+      setError("Add at least 2 PDFs to merge.");
+      return;
     }
 
-    const mergedBytes = await mergedPdf.save();
-    const blob = new Blob([mergedBytes], { type: "application/pdf" });
-    setMergedBlob(blob);
-    setMerging(false);
+    setMerging(true);
+    setProgress(0);
+    setError(null);
+
+    try {
+      const mergedPdf = await PDFDocument.create();
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const bytes = await file.arrayBuffer();
+        const pdf = await PDFDocument.load(bytes);
+        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        copiedPages.forEach((page) => mergedPdf.addPage(page));
+        setProgress(Math.round(((i + 1) / files.length) * 100));
+      }
+
+      const mergedBytes = await mergedPdf.save();
+      const blob = new Blob([mergedBytes], { type: "application/pdf" });
+      setMergedBlob(blob);
+    } catch {
+      setError("Unable to merge PDFs. Please try different files.");
+    } finally {
+      setMerging(false);
+    }
   };
 
   const handleDownload = () => {
@@ -134,7 +156,6 @@ export default function MergePDFPage() {
           Upload PDFs, preview & reorder them, then merge into a single file.
         </p>
 
-        {/* Drop Zone */}
         <div
           onDrop={onDrop}
           onDragOver={(e) => e.preventDefault()}
@@ -153,7 +174,24 @@ export default function MergePDFPage() {
           </label>
         </div>
 
-        {/* Uploaded Files with Thumbnails */}
+        <div className="mt-6 grid gap-4">
+          {error && <ErrorState title="Merge Error" description={error} />}
+
+          {!error && !merging && files.length === 0 && (
+            <EmptyState
+              title="No Files Uploaded"
+              description="Upload at least 2 PDF files to start merging."
+            />
+          )}
+
+          {merging && (
+            <LoadingState
+              title="Merging PDFs"
+              description={`Combining files... ${progress}% complete.`}
+            />
+          )}
+        </div>
+
         {files.length > 0 && (
           <div className="mt-6">
             <h2 className="text-xl font-bold mb-4">Reorder Files</h2>
@@ -191,23 +229,9 @@ export default function MergePDFPage() {
           </div>
         )}
 
-        {/* Progress */}
-        {merging && (
-          <div className="mt-6">
-            <div className="h-2 rounded-full bg-gray-700 overflow-hidden">
-              <div
-                className="h-full bg-accent-color transition-all"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <p className="text-xs text-center text-gray-400 mt-2">{progress}%</p>
-          </div>
-        )}
-
-        {/* Download */}
         {mergedBlob && (
           <div className="text-center mt-10">
-            <h2 className="text-xl font-bold mb-4 text-green-400">✅ Merged successfully!</h2>
+            <h2 className="text-xl font-bold mb-4 text-green-400">Merged successfully.</h2>
             <button
               onClick={handleDownload}
               className="px-6 py-3 bg-accent-color text-black font-semibold rounded-lg hover:brightness-110 transition"
@@ -221,7 +245,6 @@ export default function MergePDFPage() {
   );
 }
 
-// 🧩 Sortable thumbnail grid item
 function SortableThumbnail({
   file,
   thumbnail,
@@ -231,13 +254,7 @@ function SortableThumbnail({
   thumbnail?: string;
   onRemove: () => void;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: file.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: file.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
