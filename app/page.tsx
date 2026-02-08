@@ -133,6 +133,23 @@ export default function Home() {
 
       <div className="section-divider" />
 
+      <section className="glass-card reveal-fade-up">
+        <h2 className="text-2xl font-semibold mb-2">Free Lead Magnet</h2>
+        <p className="text-muted mb-4">
+          Download “10 Client-Proposal Templates” after a quick email unlock.
+        </p>
+        <TrackedLink
+          href="/lead-magnets/proposal-templates"
+          className="primary-btn"
+          eventName="tool_start"
+          eventPayload={{ tool: "lead_magnet_proposal_templates", source: "home_lead_magnet" }}
+        >
+          Get Free Templates
+        </TrackedLink>
+      </section>
+
+      <div className="section-divider" />
+
       <section className="reveal-fade-up">
         <div className="page-intro mb-8">
           <h2 className="page-title">Commercial Purpose By Component</h2>

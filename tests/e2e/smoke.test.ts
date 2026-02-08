@@ -17,6 +17,10 @@ describe("route integrity", () => {
     assert.equal(exists("app", "contact", "page.tsx"), true);
     assert.equal(exists("app", "blog", "page.tsx"), true);
     assert.equal(exists("app", "pricing", "page.tsx"), true);
+    assert.equal(
+      exists("app", "lead-magnets", "proposal-templates", "page.tsx"),
+      true
+    );
   });
 
   it("has concrete pages for live tool categories", () => {
@@ -91,5 +95,16 @@ describe("funnel analytics instrumentation", () => {
     assert.match(aiTool, /PostSuccessEmailCapture/);
     assert.match(mergeTool, /PostSuccessEmailCapture/);
     assert.match(pdfToWordTool, /PostSuccessEmailCapture/);
+  });
+
+  it("tracks lead magnet funnel events", () => {
+    const leadMagnet = fs.readFileSync(
+      routeFile("app", "lead-magnets", "proposal-templates", "page.tsx"),
+      "utf8"
+    );
+    assert.match(leadMagnet, /landing_view/);
+    assert.match(leadMagnet, /tool_start/);
+    assert.match(leadMagnet, /email_capture/);
+    assert.match(leadMagnet, /tool_success/);
   });
 });
