@@ -27,7 +27,13 @@ import ToolTrustSignals from "@/components/ToolTrustSignals";
 import ToolNextActions from "@/components/ToolNextActions";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { trackEvent } from "@/lib/analytics";
-import { ToolUsageSnapshot, getToolUsageSnapshot, recordToolSuccess } from "@/lib/toolUsage";
+import { ToolUsageSnapshot } from "@/lib/toolUsage";
+import {
+  checkUsageWithFallback,
+  getUsageSnapshotWithFallback,
+  recordUsageWithFallback,
+} from "@/lib/toolUsageServerClient";
+// Backward-compatible usage flow still falls back to getToolUsageSnapshot when API is unavailable.
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
@@ -48,9 +54,13 @@ export default function MergePDFPage() {
   const sensors = useSensors(useSensor(PointerSensor));
 
   useEffect(() => {
-    const current = getToolUsageSnapshot("pdf_merge");
-    setUsage(current);
-    setShowLimitUpgrade(current.isLimitReached);
+    const load = async () => {
+      const current = await getUsageSnapshotWithFallback("pdf_merge");
+      setUsage(current);
+      setShowLimitUpgrade(current.isLimitReached);
+    };
+
+    load();
   }, []);
 
   const generateThumbnail = async (file: FileWithId) => {
@@ -110,10 +120,11 @@ export default function MergePDFPage() {
       return;
     }
 
-    const current = getToolUsageSnapshot("pdf_merge");
+    const gate = await checkUsageWithFallback("pdf_merge");
+    const current = gate.snapshot;
     setUsage(current);
 
-    if (current.isLimitReached) {
+    if (!gate.allowed || current.isLimitReached) {
       setError("Daily free limit reached. Upgrade to Pro for higher limits.");
       setShowLimitUpgrade(true);
       trackEvent("tool_start", { tool: "pdf_merge", blocked: "limit_hit" });
@@ -141,7 +152,7 @@ export default function MergePDFPage() {
       const blob = new Blob([mergedBytes], { type: "application/pdf" });
       setMergedBlob(blob);
       trackEvent("tool_success", { tool: "pdf_merge" });
-      const nextUsage = recordToolSuccess("pdf_merge");
+      const nextUsage = await recordUsageWithFallback("pdf_merge");
       setUsage(nextUsage);
       setShowValueUpgrade(nextUsage.totalSuccessCount >= 2);
       setShowLimitUpgrade(nextUsage.isLimitReached);

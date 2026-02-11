@@ -16,6 +16,42 @@ export interface StoredAnalyticsEvent {
 const ANALYTICS_STORAGE_KEY = "dmz_analytics_events";
 const MAX_STORED_EVENTS = 500;
 
+const dispatchServerAnalyticsEvent = (
+  event: string,
+  payload: AnalyticsPayload,
+  timestamp: string
+) => {
+  if (typeof window === "undefined") return;
+
+  const body = JSON.stringify({
+    event,
+    payload,
+    timestamp,
+    path: window.location.pathname,
+  });
+
+  try {
+    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+      const blob = new Blob([body], { type: "application/json" });
+      navigator.sendBeacon("/api/events", blob);
+      return;
+    }
+  } catch {
+    // Ignore and fallback to fetch.
+  }
+
+  fetch("/api/events", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    keepalive: true,
+    body,
+  }).catch(() => {
+    // Never block UX on analytics transport failures.
+  });
+};
+
 export const trackEvent = (event: string, payload: AnalyticsPayload = {}) => {
   if (typeof window === "undefined") return;
 
@@ -37,15 +73,18 @@ export const trackEvent = (event: string, payload: AnalyticsPayload = {}) => {
   try {
     const existing = window.localStorage.getItem(ANALYTICS_STORAGE_KEY);
     const parsed = existing ? (JSON.parse(existing) as StoredAnalyticsEvent[]) : [];
+    const timestamp = new Date().toISOString();
     const nextEntry: StoredAnalyticsEvent = {
       event,
       payload,
-      timestamp: new Date().toISOString(),
+      timestamp,
     };
     const next = [...parsed, nextEntry].slice(-MAX_STORED_EVENTS);
     window.localStorage.setItem(ANALYTICS_STORAGE_KEY, JSON.stringify(next));
+    dispatchServerAnalyticsEvent(event, payload, timestamp);
   } catch {
     // Ignore storage errors; analytics should never block the user flow.
+    dispatchServerAnalyticsEvent(event, payload, new Date().toISOString());
   }
 
   if (process.env.NODE_ENV !== "production") {

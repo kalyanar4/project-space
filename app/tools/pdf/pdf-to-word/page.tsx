@@ -12,7 +12,13 @@ import ToolTrustSignals from "@/components/ToolTrustSignals";
 import ToolNextActions from "@/components/ToolNextActions";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { trackEvent } from "@/lib/analytics";
-import { ToolUsageSnapshot, getToolUsageSnapshot, recordToolSuccess } from "@/lib/toolUsage";
+import { ToolUsageSnapshot } from "@/lib/toolUsage";
+import {
+  checkUsageWithFallback,
+  getUsageSnapshotWithFallback,
+  recordUsageWithFallback,
+} from "@/lib/toolUsageServerClient";
+// Backward-compatible usage flow still falls back to getToolUsageSnapshot when API is unavailable.
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
@@ -28,9 +34,13 @@ export default function PDFToWordPage() {
   const [showLimitUpgrade, setShowLimitUpgrade] = useState(false);
 
   useEffect(() => {
-    const current = getToolUsageSnapshot("pdf_to_word");
-    setUsage(current);
-    setShowLimitUpgrade(current.isLimitReached);
+    const load = async () => {
+      const current = await getUsageSnapshotWithFallback("pdf_to_word");
+      setUsage(current);
+      setShowLimitUpgrade(current.isLimitReached);
+    };
+
+    load();
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,10 +60,11 @@ export default function PDFToWordPage() {
       return;
     }
 
-    const current = getToolUsageSnapshot("pdf_to_word");
+    const gate = await checkUsageWithFallback("pdf_to_word");
+    const current = gate.snapshot;
     setUsage(current);
 
-    if (current.isLimitReached) {
+    if (!gate.allowed || current.isLimitReached) {
       setError("Daily free limit reached. Upgrade to Pro for higher limits.");
       setShowLimitUpgrade(true);
       trackEvent("tool_start", { tool: "pdf_to_word", blocked: "limit_hit" });
@@ -84,7 +95,7 @@ export default function PDFToWordPage() {
       const blob = await Packer.toBlob(doc);
       setWordBlob(blob);
       trackEvent("tool_success", { tool: "pdf_to_word" });
-      const nextUsage = recordToolSuccess("pdf_to_word");
+      const nextUsage = await recordUsageWithFallback("pdf_to_word");
       setUsage(nextUsage);
       setShowValueUpgrade(nextUsage.totalSuccessCount >= 2);
       setShowLimitUpgrade(nextUsage.isLimitReached);

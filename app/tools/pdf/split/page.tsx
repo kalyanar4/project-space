@@ -1,12 +1,23 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist/webpack";
 import Link from "next/link";
 import Image from "next/image";
 import ToolsNav from "../../ToolsNav";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FlowStates";
+import PostSuccessEmailCapture from "@/components/PostSuccessEmailCapture";
+import ToolTrustSignals from "@/components/ToolTrustSignals";
+import ToolNextActions from "@/components/ToolNextActions";
+import UpgradePrompt from "@/components/UpgradePrompt";
+import { trackEvent } from "@/lib/analytics";
+import { ToolUsageSnapshot } from "@/lib/toolUsage";
+import {
+  checkUsageWithFallback,
+  getUsageSnapshotWithFallback,
+  recordUsageWithFallback,
+} from "@/lib/toolUsageServerClient";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`;
 
@@ -20,8 +31,21 @@ export default function SplitPDFPage() {
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [pageRanges, setPageRanges] = useState<PageRangeInput>("");
   const [error, setError] = useState<string | null>(null);
+  const [usage, setUsage] = useState<ToolUsageSnapshot | null>(null);
+  const [showValueUpgrade, setShowValueUpgrade] = useState(false);
+  const [showLimitUpgrade, setShowLimitUpgrade] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      const current = await getUsageSnapshotWithFallback("pdf_split");
+      setUsage(current);
+      setShowLimitUpgrade(current.isLimitReached);
+    };
+
+    load();
+  }, []);
 
   const handleFile = async (file: File) => {
     if (!file || file.type !== "application/pdf") {
@@ -99,6 +123,18 @@ export default function SplitPDFPage() {
       return;
     }
 
+    const gate = await checkUsageWithFallback("pdf_split");
+    const current = gate.snapshot;
+    setUsage(current);
+    if (!gate.allowed || current.isLimitReached) {
+      setError("Daily free limit reached. Upgrade to Pro for higher limits.");
+      setShowLimitUpgrade(true);
+      trackEvent("tool_start", { tool: "pdf_split", blocked: "limit_hit" });
+      return;
+    }
+
+    trackEvent("tool_start", { tool: "pdf_split" });
+
     setSplitting(true);
     setProgress(0);
     setError(null);
@@ -130,6 +166,11 @@ export default function SplitPDFPage() {
       }
 
       setSplitFiles(splitBlobs);
+      trackEvent("tool_success", { tool: "pdf_split" });
+      const nextUsage = await recordUsageWithFallback("pdf_split");
+      setUsage(nextUsage);
+      setShowValueUpgrade(nextUsage.totalSuccessCount >= 2);
+      setShowLimitUpgrade(nextUsage.isLimitReached);
     } catch {
       setError("Failed to split PDF. Please try a different file.");
     } finally {
@@ -182,6 +223,15 @@ export default function SplitPDFPage() {
           </button>
           {selectedFile && <p className="mt-2 text-sm text-green-400">{selectedFile.name}</p>}
         </div>
+        <p className="text-sm text-muted text-center mt-3">
+          Free plan usage today: {usage?.dailySuccessCount ?? 0}/3 successful runs.
+        </p>
+
+        <ToolTrustSignals
+          privacyNote="Files are processed in-browser by default and are not uploaded in this split flow."
+          processingNote="Page extraction runs locally in your browser session."
+          reliabilityNote="Verify output pages before sharing, especially for complex PDF structures."
+        />
 
         <div className="mt-6 grid gap-4">
           {error && <ErrorState title="Split Error" description={error} />}
@@ -263,6 +313,28 @@ export default function SplitPDFPage() {
                 </div>
               ))}
             </div>
+            <ToolNextActions
+              sourceToolId="pdf_split"
+              actions={[
+                {
+                  title: "Try Merge PDF",
+                  description: "Recombine selected pages into a final client-ready document.",
+                  href: "/tools/pdf/merge",
+                },
+                {
+                  title: "Convert split pages to Word",
+                  description: "Turn selected pages into editable drafts for faster revisions.",
+                  href: "/tools/pdf/pdf-to-word",
+                },
+              ]}
+            />
+            <PostSuccessEmailCapture toolId="pdf_split" />
+            {showValueUpgrade && !showLimitUpgrade && (
+              <UpgradePrompt sourceToolId="pdf_split" trigger="value_moment" />
+            )}
+            {showLimitUpgrade && (
+              <UpgradePrompt sourceToolId="pdf_split" trigger="limit_hit" />
+            )}
           </div>
         )}
       </div>

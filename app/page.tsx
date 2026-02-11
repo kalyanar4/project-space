@@ -73,11 +73,11 @@ export default function Home() {
       </section>
 
       <section className="glass-card reveal-fade-up">
-        <h2 className="text-3xl font-semibold tracking-tight mb-3">Predefined Niche</h2>
+        <h2 className="text-3xl font-semibold tracking-tight mb-3">Built for Client Delivery Work</h2>
         <p className="text-muted">
-          Our niche is fixed: AI + PDF productivity for freelancers and small agencies.
-          We prioritize high-frequency client delivery tasks where speed and reliability
-          directly affect revenue.
+          Designed for freelancers and small agencies handling repeat client tasks.
+          Fast AI drafting and reliable PDF workflows help you deliver on time and
+          protect margin.
         </p>
       </section>
 
