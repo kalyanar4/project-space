@@ -21,7 +21,7 @@ const getSecureFlag = (req: Request) => {
 
 export async function POST(req: Request) {
   const secure = getSecureFlag(req);
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionId = cookieStore.get(BILLING_SESSION_COOKIE)?.value || createBillingSessionId();
 
   let body: {
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   const secure = getSecureFlag(req);
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionId = cookieStore.get(BILLING_SESSION_COOKIE)?.value || createBillingSessionId();
 
   const { searchParams } = new URL(req.url);

@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
   const origin = req.headers.get("origin") || "";
   const secure = origin.startsWith("https://");
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionId = cookieStore.get(BILLING_SESSION_COOKIE)?.value || createBillingSessionId();
   const snapshot = await getServerToolUsageSnapshot(sessionId, toolId);
   const response = NextResponse.json({ ok: true, snapshot });
