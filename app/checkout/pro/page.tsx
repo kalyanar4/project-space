@@ -1,25 +1,94 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import PageAnalytics from "@/components/PageAnalytics";
 import { trackCoreEvent } from "@/lib/analytics";
 
-const CHECKOUT_URL = process.env.NEXT_PUBLIC_PRO_CHECKOUT_URL;
-
 export default function ProCheckoutPage() {
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
+
   const [upgraded, setUpgraded] = useState(false);
+  const [isStartingCheckout, setIsStartingCheckout] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const trackedCompleteRef = useRef(false);
 
-  const handleUpgrade = () => {
-    trackCoreEvent("upgrade_click", { source: "checkout_page", tier: "pro" });
-
-    if (CHECKOUT_URL) {
-      window.location.href = CHECKOUT_URL;
-      return;
+  const pollEntitlement = async () => {
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      const res = await fetch("/api/billing/entitlement", { method: "GET" });
+      const data = (await res.json()) as { plan?: string };
+      if (data.plan === "pro") {
+        return true;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
     }
+    return false;
+  };
 
-    trackCoreEvent("checkout_complete", { source: "checkout_page", tier: "pro" });
-    setUpgraded(true);
+  useEffect(() => {
+    let mounted = true;
+
+    const syncCheckoutStatus = async () => {
+      if (status === "cancel") {
+        if (mounted) {
+          setStatusMessage("Checkout canceled. You can resume anytime.");
+          setUpgraded(false);
+        }
+        return;
+      }
+
+      if (status !== "success") return;
+
+      if (mounted) {
+        setStatusMessage("Finalizing your Pro access...");
+      }
+
+      const hasProAccess = await pollEntitlement();
+      if (!mounted) return;
+
+      if (!hasProAccess) {
+        setError("Payment succeeded, but Pro access is still syncing. Please refresh in a moment.");
+        return;
+      }
+
+      setUpgraded(true);
+      setStatusMessage("Pro access enabled.");
+      if (!trackedCompleteRef.current) {
+        trackCoreEvent("checkout_complete", { source: "checkout_page", tier: "pro" });
+        trackedCompleteRef.current = true;
+      }
+    };
+
+    syncCheckoutStatus();
+    return () => {
+      mounted = false;
+    };
+  }, [status]);
+
+  const handleUpgrade = async () => {
+    setError(null);
+    setStatusMessage(null);
+    trackCoreEvent("upgrade_click", { source: "checkout_page", tier: "pro" });
+    setIsStartingCheckout(true);
+
+    try {
+      const res = await fetch("/api/billing/create-checkout-session", { method: "POST" });
+      const data = (await res.json()) as { url?: string; error?: string };
+
+      if (!res.ok || !data.url) {
+        setError(data.error || "Failed to start checkout.");
+        return;
+      }
+
+      window.location.href = data.url;
+    } catch {
+      setError("Checkout service is unavailable. Try again shortly.");
+    } finally {
+      setIsStartingCheckout(false);
+    }
   };
 
   return (
@@ -42,18 +111,22 @@ export default function ProCheckoutPage() {
           <li>Priority support for production use-cases</li>
         </ul>
 
-        <button onClick={handleUpgrade} className="primary-btn" type="button">
-          Start Pro Now
+        <button onClick={handleUpgrade} className="primary-btn" type="button" disabled={isStartingCheckout}>
+          {isStartingCheckout ? "Redirecting to Checkout..." : "Start Pro Now"}
         </button>
 
         {upgraded && (
           <p className="text-green-500 mt-4">
-            Upgrade event recorded. You can now continue with Pro onboarding.
+            Pro is active. You can continue with advanced tool workflows.
           </p>
         )}
 
+        {statusMessage && <p className="text-muted mt-4">{statusMessage}</p>}
+        {error && <p className="text-red-400 mt-4">{error}</p>}
+
         <p className="text-sm text-muted mt-4">
-          Tip: set <code>NEXT_PUBLIC_PRO_CHECKOUT_URL</code> to route users to your payment provider.
+          Powered by Stripe Checkout. Configure billing with <code>STRIPE_SECRET_KEY</code>,{" "}
+          <code>STRIPE_PRICE_ID_PRO</code>, and <code>STRIPE_WEBHOOK_SECRET</code>.
         </p>
       </section>
 

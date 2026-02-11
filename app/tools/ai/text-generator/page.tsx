@@ -9,7 +9,13 @@ import ToolTrustSignals from "@/components/ToolTrustSignals";
 import ToolNextActions from "@/components/ToolNextActions";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import { trackEvent } from "@/lib/analytics";
-import { ToolUsageSnapshot, getToolUsageSnapshot, recordToolSuccess } from "@/lib/toolUsage";
+import { ToolUsageSnapshot } from "@/lib/toolUsage";
+import {
+  checkUsageWithFallback,
+  getUsageSnapshotWithFallback,
+  recordUsageWithFallback,
+} from "@/lib/toolUsageServerClient";
+// Backward-compatible usage flow still falls back to getToolUsageSnapshot when API is unavailable.
 
 export default function TextGeneratorPage() {
   const [prompt, setPrompt] = useState("");
@@ -21,9 +27,13 @@ export default function TextGeneratorPage() {
   const [showLimitUpgrade, setShowLimitUpgrade] = useState(false);
 
   useEffect(() => {
-    const current = getToolUsageSnapshot("ai_text_generator");
-    setUsage(current);
-    setShowLimitUpgrade(current.isLimitReached);
+    const load = async () => {
+      const current = await getUsageSnapshotWithFallback("ai_text_generator");
+      setUsage(current);
+      setShowLimitUpgrade(current.isLimitReached);
+    };
+
+    load();
   }, []);
 
   const generate = async () => {
@@ -32,10 +42,11 @@ export default function TextGeneratorPage() {
       return;
     }
 
-    const current = getToolUsageSnapshot("ai_text_generator");
+    const gate = await checkUsageWithFallback("ai_text_generator");
+    const current = gate.snapshot;
     setUsage(current);
 
-    if (current.isLimitReached) {
+    if (!gate.allowed || current.isLimitReached) {
       setError("Daily free limit reached. Upgrade to Pro for higher limits.");
       setShowLimitUpgrade(true);
       trackEvent("tool_start", { tool: "ai_text_generator", blocked: "limit_hit" });
@@ -60,7 +71,7 @@ export default function TextGeneratorPage() {
       if (!res.ok) throw new Error(data.error || "Error generating text");
       setResult(data.text);
       trackEvent("tool_success", { tool: "ai_text_generator" });
-      const nextUsage = recordToolSuccess("ai_text_generator");
+      const nextUsage = await recordUsageWithFallback("ai_text_generator");
       setUsage(nextUsage);
       setShowValueUpgrade(nextUsage.totalSuccessCount >= 2);
       setShowLimitUpgrade(nextUsage.isLimitReached);

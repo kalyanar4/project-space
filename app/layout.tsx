@@ -32,7 +32,7 @@ export const viewport: Viewport = {
 
 const links = [
   { name: "Home", path: "/" },
-  { name: "Technology", path: "/technology" },
+  { name: "Why Us", path: "/technology" },
   { name: "Projects", path: "/projects" },
   { name: "Blog", path: "/blog" },
   { name: "Tools", path: "/tools" },
