@@ -2,18 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import PageAnalytics from "@/components/PageAnalytics";
 import { trackCoreEvent } from "@/lib/analytics";
 
 export default function ProCheckoutPage() {
-  const searchParams = useSearchParams();
-  const status = searchParams.get("status");
-
   const [upgraded, setUpgraded] = useState(false);
   const [isStartingCheckout, setIsStartingCheckout] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
   const trackedCompleteRef = useRef(false);
 
   const pollEntitlement = async () => {
@@ -27,6 +24,12 @@ export default function ProCheckoutPage() {
     }
     return false;
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const nextStatus = new URLSearchParams(window.location.search).get("status");
+    setStatus(nextStatus);
+  }, []);
 
   useEffect(() => {
     let mounted = true;

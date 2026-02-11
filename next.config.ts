@@ -9,7 +9,7 @@ import { basePath } from "./lib/basePath";
 // because it tries to bundle the native `canvas` package.
 const nextConfig: NextConfig = {
   basePath,
-  output: "export",
+  output: process.env.NEXT_STATIC_EXPORT === "1" ? "export" : undefined,
   images: {
     unoptimized: true,
   },

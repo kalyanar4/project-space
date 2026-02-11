@@ -4,7 +4,7 @@ import { BILLING_SESSION_COOKIE } from "@/lib/billingSession";
 import { getEntitlement } from "@/lib/billingEntitlements";
 
 export async function GET() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionId = cookieStore.get(BILLING_SESSION_COOKIE)?.value;
 
   if (!sessionId) {

@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   const successUrl = `${origin}/checkout/pro?status=success&session_id={CHECKOUT_SESSION_ID}`;
   const cancelUrl = `${origin}/checkout/pro?status=cancel`;
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const existing = cookieStore.get(BILLING_SESSION_COOKIE)?.value;
   const billingSessionId = existing || createBillingSessionId();
 
