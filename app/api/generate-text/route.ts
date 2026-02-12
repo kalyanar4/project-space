@@ -6,6 +6,8 @@ import {
 } from "@/lib/billingSession";
 import { consumeRateLimit } from "@/lib/requestRateLimit";
 
+export const dynamic = "force-static";
+
 export async function POST(req: NextRequest) {
   const secure =
     (req.headers.get("x-forwarded-proto") || "").toLowerCase() === "https" ||

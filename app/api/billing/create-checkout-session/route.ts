@@ -7,6 +7,8 @@ import {
 } from "@/lib/billingSession";
 import { createStripeCheckoutSession } from "@/lib/stripeBilling";
 
+export const dynamic = "force-static";
+
 const json = (body: unknown, status = 200) => NextResponse.json(body, { status });
 
 const toOrigin = (req: Request) => {

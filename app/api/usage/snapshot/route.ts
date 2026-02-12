@@ -7,12 +7,30 @@ import {
 } from "@/lib/billingSession";
 import { getServerToolUsageSnapshot } from "@/lib/serverToolUsage";
 
+export const dynamic = "force-static";
+const IS_STATIC_EXPORT =
+  process.env.GITHUB_PAGES === "true" || process.env.NEXT_STATIC_EXPORT === "1";
+
 const withSessionCookie = (response: NextResponse, sessionId: string, secure: boolean) => {
   response.cookies.set(BILLING_SESSION_COOKIE, sessionId, billingSessionCookieOptions(secure));
   return response;
 };
 
 export async function GET(req: Request) {
+  if (IS_STATIC_EXPORT) {
+    return NextResponse.json({
+      ok: true,
+      snapshot: {
+        dayKey: "static_export",
+        dailySuccessCount: 0,
+        totalSuccessCount: 0,
+        remainingDailyRuns: 3,
+        isLimitReached: false,
+        plan: "free",
+      },
+    });
+  }
+
   const { searchParams } = new URL(req.url);
   const toolId = String(searchParams.get("toolId") || "").trim();
   if (!toolId) {

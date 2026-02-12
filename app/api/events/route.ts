@@ -7,6 +7,10 @@ import {
 } from "@/lib/billingSession";
 import { ingestServerAnalyticsEvent, listServerAnalyticsEvents } from "@/lib/serverAnalytics";
 
+export const dynamic = "force-static";
+const IS_STATIC_EXPORT =
+  process.env.GITHUB_PAGES === "true" || process.env.NEXT_STATIC_EXPORT === "1";
+
 const withSessionCookie = (response: NextResponse, sessionId: string, secure: boolean) => {
   response.cookies.set(BILLING_SESSION_COOKIE, sessionId, billingSessionCookieOptions(secure));
   return response;
@@ -64,6 +68,10 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+  if (IS_STATIC_EXPORT) {
+    return NextResponse.json({ ok: true, events: [], sessionId: "static_export", days: 7 });
+  }
+
   const secure = getSecureFlag(req);
   const cookieStore = await cookies();
   const sessionId = cookieStore.get(BILLING_SESSION_COOKIE)?.value || createBillingSessionId();

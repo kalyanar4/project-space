@@ -3,7 +3,15 @@ import { NextResponse } from "next/server";
 import { BILLING_SESSION_COOKIE } from "@/lib/billingSession";
 import { getEntitlement } from "@/lib/billingEntitlements";
 
+export const dynamic = "force-static";
+const IS_STATIC_EXPORT =
+  process.env.GITHUB_PAGES === "true" || process.env.NEXT_STATIC_EXPORT === "1";
+
 export async function GET() {
+  if (IS_STATIC_EXPORT) {
+    return NextResponse.json({ plan: "free", source: "static_export" });
+  }
+
   const cookieStore = await cookies();
   const sessionId = cookieStore.get(BILLING_SESSION_COOKIE)?.value;
 
