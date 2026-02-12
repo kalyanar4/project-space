@@ -7,6 +7,8 @@ import {
 } from "@/lib/billingSession";
 import { recordServerToolSuccess } from "@/lib/serverToolUsage";
 
+export const dynamic = "force-static";
+
 const withSessionCookie = (response: NextResponse, sessionId: string, secure: boolean) => {
   response.cookies.set(BILLING_SESSION_COOKIE, sessionId, billingSessionCookieOptions(secure));
   return response;
